@@ -13,8 +13,13 @@ UCLASS()
 class PROJECTBD2_API UMyCharacterAnimInstance : public UAnimInstance
 {
 	GENERATED_BODY()
-	
-	
-	
+
+public:
+	virtual void NativeUpdateAnimation_WorkerThread(float DeltaSeconds) override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, category="Info")
+		float Speed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, category="Info")
+		float Direction;
 	
 };
