@@ -7,6 +7,7 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Components/CapsuleComponent.h"
 #include "Animation/AnimInstance.h"
+#include "Components/StaticMeshComponent.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -35,12 +36,25 @@ AMyCharacter::AMyCharacter()
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 
 	// _C중요
-	static ConstructorHelpers::FClassFinder<UAnimInstance> Anim_Class(TEXT("AnimBlueprint'/Game/Blueprints/Animation/ABP_Male.ABP_Male_C'"));
-	if (Anim_Class.Succeeded())
+	//static ConstructorHelpers::FClassFinder<UAnimInstance> Anim_Class(TEXT("AnimBlueprint'/Game/Blueprints/Animation/ABP_Male.ABP_Male_C'"));
+	//if (Anim_Class.Succeeded())
+	//{
+	//	GetMesh()->SetAnimInstanceClass(Anim_Class.Class);
+	//}
+
+	FStringClassReference Anim_Male_Ref(TEXT("AnimBlueprint'/Game/Blueprints/Animation/ABP_Male.ABP_Male_C'"));
+	if (UClass* Anim_Male_Class = Anim_Male_Ref.TryLoadClass<UAnimInstance>())
 	{
-		GetMesh()->SetAnimInstanceClass(Anim_Class.Class);
+		GetMesh()->SetAnimInstanceClass(Anim_Male_Class);
 	}
 
+	Weapon = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Weapon"));
+	Weapon->SetupAttachment(GetMesh(), TEXT("RHandWeapon"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> SM_Weapon(TEXT("StaticMesh'/Game/TPSData/Weapons/M4A1/SM_M4A1.SM_M4A1'"));
+	if (SM_Weapon.Succeeded())
+	{
+		Weapon->SetStaticMesh(SM_Weapon.Object);
+	}
 }
 
 // Called when the game starts or when spawned
