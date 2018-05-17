@@ -27,6 +27,9 @@ AMyCharacter::AMyCharacter()
 	GetMesh()->SetRelativeLocation(FVector(0, 0,
 		-GetCapsuleComponent()->GetScaledCapsuleHalfHeight()));
 	GetMesh()->SetRelativeRotation(FRotator(0, -90.0f, 0));
+
+	bUseControllerRotationPitch = false;
+	SpringArm->bUsePawnControlRotation = true;
 }
 
 // Called when the game starts or when spawned
@@ -48,5 +51,45 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	PlayerInputComponent->BindAxis(TEXT("MoveForward"), this,
+		&AMyCharacter::MoveForward);
+	PlayerInputComponent->BindAxis(TEXT("MoveRight"), this,
+		&AMyCharacter::MoveRight);
+	PlayerInputComponent->BindAxis(TEXT("LookUp"), this,
+		&AMyCharacter::LookUp);
+	PlayerInputComponent->BindAxis(TEXT("Turn"), this,
+		&AMyCharacter::Turn);
+}
+
+void AMyCharacter::MoveForward(float Value)
+{
+	if (Value != 0.0f)
+	{
+		AddMovementInput(GetActorForwardVector(), Value);
+	}
+}
+
+void AMyCharacter::MoveRight(float Value)
+{
+	if (Value != 0.0f)
+	{
+		AddMovementInput(GetActorRightVector(), Value);
+	}
+}
+void AMyCharacter::LookUp(float Value)
+{
+	if (Value != 0.0f)
+	{		
+		AddControllerPitchInput(Value);
+		//UE_LOG(LogClass, Warning, TEXT("Look Up %f"), Value);
+	}
+}
+void AMyCharacter::Turn(float Value)
+{
+	if (Value != 0.0f)
+	{
+		AddControllerYawInput(Value);
+		//UE_LOG(LogClass, Warning, TEXT("Turn %f"), Value);
+	}
 }
 
