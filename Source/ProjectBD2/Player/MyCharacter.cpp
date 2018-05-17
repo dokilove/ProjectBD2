@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "MyCharacter.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -6,6 +6,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Components/CapsuleComponent.h"
+#include "Animation/AnimInstance.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -30,6 +31,16 @@ AMyCharacter::AMyCharacter()
 
 	bUseControllerRotationPitch = false;
 	SpringArm->bUsePawnControlRotation = true;
+
+	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+
+	// _C중요
+	static ConstructorHelpers::FClassFinder<UAnimInstance> Anim_Class(TEXT("AnimBlueprint'/Game/Blueprints/Animation/ABP_Male.ABP_Male_C'"));
+	if (Anim_Class.Succeeded())
+	{
+		GetMesh()->SetAnimInstanceClass(Anim_Class.Class);
+	}
+
 }
 
 // Called when the game starts or when spawned
