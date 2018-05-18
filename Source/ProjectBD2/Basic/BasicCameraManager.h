@@ -3,18 +3,18 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/PlayerController.h"
-#include "BasicPC.generated.h"
+#include "Camera/PlayerCameraManager.h"
+#include "BasicCameraManager.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PROJECTBD2_API ABasicPC : public APlayerController
+class PROJECTBD2_API ABasicCameraManager : public APlayerCameraManager
 {
 	GENERATED_BODY()
 	
 	
-public:
-	ABasicPC();
+	
+	
 };

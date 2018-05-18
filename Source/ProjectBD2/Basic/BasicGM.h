@@ -14,7 +14,8 @@ class PROJECTBD2_API ABasicGM : public AGameModeBase
 {
 	GENERATED_BODY()
 	
-	
+public:
+	ABasicGM();
 	
 	
 };
