@@ -21,5 +21,7 @@ public:
 		float Speed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, category="Info")
 		float Direction;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "Info")
+		bool bIsCrouch;
 	
 };

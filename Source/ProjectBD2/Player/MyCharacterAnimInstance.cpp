@@ -13,5 +13,6 @@ void UMyCharacterAnimInstance::NativeUpdateAnimation_WorkerThread(float DeltaSec
 	{
 		Speed = Pawn->GetCharacterMovement()->Velocity.Size();
 		Direction = CalculateDirection(Pawn->GetCharacterMovement()->Velocity, Pawn->GetActorRotation());
+		bIsCrouch = Pawn->bIsCrouched;
 	}
 }

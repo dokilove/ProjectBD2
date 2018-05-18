@@ -8,6 +8,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Animation/AnimInstance.h"
 #include "Components/StaticMeshComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -17,6 +18,7 @@ AMyCharacter::AMyCharacter()
 
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->SetupAttachment(RootComponent);
+	SpringArm->SetRelativeLocation(FVector(0, 30, 70));
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
@@ -55,6 +57,8 @@ AMyCharacter::AMyCharacter()
 	{
 		Weapon->SetStaticMesh(SM_Weapon.Object);
 	}
+
+	GetCharacterMovement()->NavAgentProps.bCanCrouch = true;
 }
 
 // Called when the game starts or when spawned
@@ -84,6 +88,9 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		&AMyCharacter::LookUp);
 	PlayerInputComponent->BindAxis(TEXT("Turn"), this,
 		&AMyCharacter::Turn);
+
+	PlayerInputComponent->BindAction(TEXT("Crouch"), EInputEvent::IE_Pressed, this,
+		&AMyCharacter::TryCrouch);
 }
 
 void AMyCharacter::MoveForward(float Value)
@@ -118,3 +125,14 @@ void AMyCharacter::Turn(float Value)
 	}
 }
 
+void AMyCharacter::TryCrouch()
+{
+	if (CanCrouch())
+	{
+		Crouch();
+	}
+	else
+	{
+		UnCrouch();
+	}
+}
