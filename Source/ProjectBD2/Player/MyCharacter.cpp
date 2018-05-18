@@ -73,6 +73,8 @@ void AMyCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	//UE_LOG(LogClass, Warning, TEXT("Crouch %f"), SpringArm->GetComponentLocation().Z);
+	//UE_LOG(LogClass, Warning, TEXT("eyeheight %f"), CrouchedEyeHeight);
 }
 
 // Called to bind functionality to input
