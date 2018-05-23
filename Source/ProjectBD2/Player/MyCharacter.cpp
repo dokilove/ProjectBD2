@@ -93,6 +93,8 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 	PlayerInputComponent->BindAction(TEXT("Crouch"), EInputEvent::IE_Pressed, this,
 		&AMyCharacter::TryCrouch);
+	PlayerInputComponent->BindAction(TEXT("Ironsight"), EInputEvent::IE_Pressed, this,
+		&AMyCharacter::TryIronsight);
 }
 
 void AMyCharacter::MoveForward(float Value)
@@ -137,4 +139,17 @@ void AMyCharacter::TryCrouch()
 	{
 		UnCrouch();
 	}
+}
+
+void AMyCharacter::TryIronsight()
+{
+	bIsIronsight = bIsIronsight ? false : true;
+}
+
+FRotator AMyCharacter::GetAimoffset() const
+{
+	const FVector AimDirWS = GetBaseAimRotation().Vector();
+	const FVector AimDirLS = ActorToWorld().InverseTransformVectorNoScale(AimDirWS);
+	const FRotator AimRotLS = AimDirLS.Rotation();
+	return AimRotLS;
 }

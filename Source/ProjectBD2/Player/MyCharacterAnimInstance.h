@@ -23,5 +23,14 @@ public:
 		float Direction;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "Info")
 		bool bIsCrouch;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "Info")
+		float Yaw;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "Info")
+		float Pitch;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "Info")
+		bool bIsIronsight;
 	
 };

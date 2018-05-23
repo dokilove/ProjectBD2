@@ -35,7 +35,9 @@ public:
 	UFUNCTION()
 		void Turn(float Value);
 	UFUNCTION()
-	void TryCrouch();
+		void TryCrouch();
+	UFUNCTION()
+		void TryIronsight();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		class USpringArmComponent* SpringArm;
@@ -45,4 +47,9 @@ public:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		class UStaticMeshComponent* Weapon;
+		
+	FRotator GetAimoffset() const;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Info")
+		bool bIsIronsight = false;
 };
