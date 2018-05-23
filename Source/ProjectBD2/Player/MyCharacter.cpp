@@ -77,6 +77,11 @@ void AMyCharacter::Tick(float DeltaTime)
 
 	//UE_LOG(LogClass, Warning, TEXT("Crouch %f"), SpringArm->GetComponentLocation().Z);
 	//UE_LOG(LogClass, Warning, TEXT("eyeheight %f"), CrouchedEyeHeight);
+
+	if (GetCharacterMovement()->Velocity.Size() <= 0.0f)
+	{
+		UnSprint();
+	}
 }
 
 // Called to bind functionality to input
@@ -97,6 +102,14 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		&AMyCharacter::TryCrouch);
 	PlayerInputComponent->BindAction(TEXT("Ironsight"), EInputEvent::IE_Pressed, this,
 		&AMyCharacter::TryIronsight);
+	PlayerInputComponent->BindAction(TEXT("Sprint"), EInputEvent::IE_Pressed, this,
+		&AMyCharacter::Sprint);
+	PlayerInputComponent->BindAction(TEXT("Sprint"), EInputEvent::IE_Released, this,
+		&AMyCharacter::UnSprint);
+	PlayerInputComponent->BindAction(TEXT("LookAround"), EInputEvent::IE_Pressed, this,
+		&AMyCharacter::LookAround);
+	PlayerInputComponent->BindAction(TEXT("LookAround"), EInputEvent::IE_Released, this,
+		&AMyCharacter::LookForward);
 }
 
 void AMyCharacter::MoveForward(float Value)
@@ -109,7 +122,7 @@ void AMyCharacter::MoveForward(float Value)
 
 void AMyCharacter::MoveRight(float Value)
 {
-	if (Value != 0.0f)
+	if (Value != 0.0f && !bIsSprint)
 	{
 		AddMovementInput(GetActorRightVector(), Value);
 	}
@@ -133,7 +146,7 @@ void AMyCharacter::Turn(float Value)
 
 void AMyCharacter::TryCrouch()
 {
-	if (CanCrouch())
+	if (CanCrouch() && !bIsSprint)
 	{
 		Crouch();
 	}
@@ -145,6 +158,11 @@ void AMyCharacter::TryCrouch()
 
 void AMyCharacter::TryIronsight()
 {
+	if (bIsSprint)
+	{
+		return;
+	}
+
 	bIsIronsight = bIsIronsight ? false : true;
 
 	if (bIsIronsight)
@@ -165,4 +183,32 @@ FRotator AMyCharacter::GetAimoffset() const
 	const FVector AimDirLS = ActorToWorld().InverseTransformVectorNoScale(AimDirWS);
 	const FRotator AimRotLS = AimDirLS.Rotation();
 	return AimRotLS;
+}
+
+void AMyCharacter::Sprint()
+{
+	if (!bIsCrouched && !bIsIronsight)
+	{
+		bIsSprint = true;
+		GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
+	}
+}
+
+void AMyCharacter::UnSprint()
+{
+	bIsSprint = false;
+	GetCharacterMovement()->MaxWalkSpeed = JogSpeed;
+}
+
+void AMyCharacter::LookAround()
+{
+	if (!bIsIronsight)
+	{
+		bUseControllerRotationYaw = false;
+	}
+}
+
+void AMyCharacter::LookForward()
+{
+	bUseControllerRotationYaw = true;
 }

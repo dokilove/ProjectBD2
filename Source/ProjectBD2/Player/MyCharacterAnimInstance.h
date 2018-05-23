@@ -32,5 +32,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "Info")
 		bool bIsIronsight;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "Info")
+		bool bIsSprint;
 	
 };

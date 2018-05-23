@@ -57,4 +57,17 @@ public:
 		float JogSpeed = 360.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Info")
 		float WalkSpeed = 160.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Info")
+		float SprintSpeed = 700.0f;
+
+	UFUNCTION()
+		void Sprint();
+	UFUNCTION()
+		void UnSprint();
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Info")
+		bool bIsSprint;
+	UFUNCTION()
+		void LookAround();
+	UFUNCTION()
+		void LookForward();
 };

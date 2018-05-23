@@ -17,5 +17,6 @@ void UMyCharacterAnimInstance::NativeUpdateAnimation_WorkerThread(float DeltaSec
 		Yaw = Pawn->GetAimoffset().Yaw;
 		Pitch = Pawn->GetAimoffset().Pitch;
 		bIsIronsight = Pawn->bIsIronsight;
+		bIsSprint = Pawn->bIsSprint;
 	}
 }
