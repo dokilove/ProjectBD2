@@ -38,6 +38,12 @@ public:
 		void TryCrouch();
 	UFUNCTION()
 		void TryIronsight();
+	void SetIronsightSpeed();
+	void ReleaseIronsightSpeed();
+	UFUNCTION()
+		void TryProne();
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Info")
+		bool bIsProne;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		class USpringArmComponent* SpringArm;
@@ -59,6 +65,8 @@ public:
 		float WalkSpeed = 160.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Info")
 		float SprintSpeed = 700.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Info")
+		float ProneSpeed = 50.0f;
 
 	UFUNCTION()
 		void Sprint();
@@ -70,4 +78,6 @@ public:
 		void LookAround();
 	UFUNCTION()
 		void LookForward();
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "Info")
+		bool bIsMovingLocked = false;
 };

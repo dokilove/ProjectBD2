@@ -34,5 +34,12 @@ public:
 		bool bIsIronsight;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "Info")
 		bool bIsSprint;
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "Info")
+		bool bIsProne;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "Info")
+		bool bIsMovingLocked;
+	UFUNCTION()
+		void AnimNotify_LockMove();
+	UFUNCTION()
+		void AnimNotify_UnlockMove();
 };

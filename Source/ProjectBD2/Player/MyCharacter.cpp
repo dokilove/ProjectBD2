@@ -102,10 +102,14 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		&AMyCharacter::TryCrouch);
 	PlayerInputComponent->BindAction(TEXT("Ironsight"), EInputEvent::IE_Pressed, this,
 		&AMyCharacter::TryIronsight);
+	PlayerInputComponent->BindAction(TEXT("Prone"), EInputEvent::IE_Pressed, this,
+		&AMyCharacter::TryProne);
+
 	PlayerInputComponent->BindAction(TEXT("Sprint"), EInputEvent::IE_Pressed, this,
 		&AMyCharacter::Sprint);
 	PlayerInputComponent->BindAction(TEXT("Sprint"), EInputEvent::IE_Released, this,
 		&AMyCharacter::UnSprint);
+
 	PlayerInputComponent->BindAction(TEXT("LookAround"), EInputEvent::IE_Pressed, this,
 		&AMyCharacter::LookAround);
 	PlayerInputComponent->BindAction(TEXT("LookAround"), EInputEvent::IE_Released, this,
@@ -114,7 +118,7 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 void AMyCharacter::MoveForward(float Value)
 {
-	if (Value != 0.0f)
+	if (Value != 0.0f && !bIsMovingLocked)
 	{
 		AddMovementInput(GetActorForwardVector(), Value);
 	}
@@ -122,7 +126,7 @@ void AMyCharacter::MoveForward(float Value)
 
 void AMyCharacter::MoveRight(float Value)
 {
-	if (Value != 0.0f && !bIsSprint)
+	if (Value != 0.0f && !bIsSprint && !bIsMovingLocked)
 	{
 		AddMovementInput(GetActorRightVector(), Value);
 	}
@@ -146,7 +150,7 @@ void AMyCharacter::Turn(float Value)
 
 void AMyCharacter::TryCrouch()
 {
-	if (CanCrouch() && !bIsSprint)
+	if (CanCrouch() && !bIsSprint && !bIsProne)
 	{
 		Crouch();
 	}
@@ -165,15 +169,59 @@ void AMyCharacter::TryIronsight()
 
 	bIsIronsight = bIsIronsight ? false : true;
 
+	if (bIsProne)
+	{
+		return;
+	}
+
 	if (bIsIronsight)
 	{
-		GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
-		GetCharacterMovement()->MaxWalkSpeedCrouched = WalkSpeed / 2;
+		SetIronsightSpeed();
 	}
 	else
 	{
-		GetCharacterMovement()->MaxWalkSpeed = JogSpeed;
-		GetCharacterMovement()->MaxWalkSpeedCrouched = WalkSpeed;
+		ReleaseIronsightSpeed();
+	}
+}
+
+void AMyCharacter::SetIronsightSpeed()
+{
+
+	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+	GetCharacterMovement()->MaxWalkSpeedCrouched = WalkSpeed / 2;
+}
+
+void AMyCharacter::ReleaseIronsightSpeed()
+{
+	GetCharacterMovement()->MaxWalkSpeed = JogSpeed;
+	GetCharacterMovement()->MaxWalkSpeedCrouched = WalkSpeed;
+}
+
+void AMyCharacter::TryProne()
+{
+	if (!bIsProne)
+	{
+		if (bIsSprint)
+		{
+			return;
+		}
+
+		bIsProne = true;
+		GetCharacterMovement()->MaxWalkSpeed = ProneSpeed;
+		GetCharacterMovement()->MaxWalkSpeedCrouched = ProneSpeed;
+	}
+	else
+	{
+		bIsProne = false;
+		UnCrouch();
+		if (bIsIronsight)
+		{
+			SetIronsightSpeed();
+		}
+		else
+		{
+			ReleaseIronsightSpeed();
+		}
 	}
 }
 
@@ -197,7 +245,10 @@ void AMyCharacter::Sprint()
 void AMyCharacter::UnSprint()
 {
 	bIsSprint = false;
-	GetCharacterMovement()->MaxWalkSpeed = JogSpeed;
+	if (!bIsProne)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = JogSpeed;
+	}
 }
 
 void AMyCharacter::LookAround()
