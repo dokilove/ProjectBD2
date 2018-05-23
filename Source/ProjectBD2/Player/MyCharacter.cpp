@@ -65,7 +65,9 @@ AMyCharacter::AMyCharacter()
 void AMyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	GetCharacterMovement()->MaxWalkSpeed = JogSpeed;
+	GetCharacterMovement()->MaxWalkSpeedCrouched = WalkSpeed;
 }
 
 // Called every frame
@@ -144,6 +146,17 @@ void AMyCharacter::TryCrouch()
 void AMyCharacter::TryIronsight()
 {
 	bIsIronsight = bIsIronsight ? false : true;
+
+	if (bIsIronsight)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+		GetCharacterMovement()->MaxWalkSpeedCrouched = WalkSpeed / 2;
+	}
+	else
+	{
+		GetCharacterMovement()->MaxWalkSpeed = JogSpeed;
+		GetCharacterMovement()->MaxWalkSpeedCrouched = WalkSpeed;
+	}
 }
 
 FRotator AMyCharacter::GetAimoffset() const

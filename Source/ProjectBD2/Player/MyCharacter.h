@@ -52,4 +52,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Info")
 		bool bIsIronsight = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Info")
+		float JogSpeed = 360.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Info")
+		float WalkSpeed = 160.0f;
 };
