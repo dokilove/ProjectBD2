@@ -9,6 +9,7 @@
 #include "Animation/AnimInstance.h"
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Player/WeaponComponent.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -55,13 +56,9 @@ AMyCharacter::AMyCharacter()
 		GetMesh()->SetAnimInstanceClass(Anim_Male_Class);
 	}
 
-	Weapon = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Weapon"));
+	Weapon = CreateDefaultSubobject<UWeaponComponent>(TEXT("Weapon"));
 	Weapon->SetupAttachment(GetMesh(), TEXT("RHandWeapon"));
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> SM_Weapon(TEXT("StaticMesh'/Game/TPSData/Weapons/M4A1/SM_M4A1.SM_M4A1'"));
-	if (SM_Weapon.Succeeded())
-	{
-		Weapon->SetStaticMesh(SM_Weapon.Object);
-	}
+	
 
 	GetCharacterMovement()->NavAgentProps.bCanCrouch = true;
 }

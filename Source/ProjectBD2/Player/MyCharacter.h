@@ -52,7 +52,7 @@ public:
 		class UCameraComponent* Camera;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-		class UStaticMeshComponent* Weapon;
+		class UWeaponComponent* Weapon;
 		
 	FRotator GetAimoffset() const;
 
