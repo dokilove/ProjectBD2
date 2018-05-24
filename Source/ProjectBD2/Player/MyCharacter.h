@@ -26,6 +26,8 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+
 	UFUNCTION()
 		void MoveForward(float Value);
 	UFUNCTION()
@@ -96,4 +98,13 @@ public:
 		FVector CrouchSpringArmPosition;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "Info")
 		FVector ProneSpringArmPosition;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effect")
+		class USoundBase* RifleSound;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effect")
+		class UParticleSystem* RifleMuzzle;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effect")
+		class UParticleSystem* HitEffect;
+
+	FTimerHandle FireTimeHandle;
 };

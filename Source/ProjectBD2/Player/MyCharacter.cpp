@@ -11,11 +11,16 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Player/WeaponComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Sound/SoundBase.h"
+#include "Particles/ParticleSystem.h"
+#include "TimerManager.h"
+#include "Basic/RifleCameraShake.h"
+#include "Basic/BulletDamageType.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
@@ -59,9 +64,24 @@ AMyCharacter::AMyCharacter()
 
 	Weapon = CreateDefaultSubobject<UWeaponComponent>(TEXT("Weapon"));
 	Weapon->SetupAttachment(GetMesh(), TEXT("RHandWeapon"));
-	
+
 
 	GetCharacterMovement()->NavAgentProps.bCanCrouch = true;
+
+	static ConstructorHelpers::FObjectFinder<USoundBase> S_RifleSound(TEXT("SoundCue'/Game/TPSData/Sound/Weapons/SMG_Thompson/Cue_Thompson_Shot.Cue_Thompson_Shot'"));
+	if (S_RifleSound.Succeeded())
+	{
+		RifleSound = S_RifleSound.Object;
+	}
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> P_RifleMuzzle(TEXT("ParticleSystem'/Game/TPSData/Effects/P_AssaultRifle_MF.P_AssaultRifle_MF'"));
+	if (P_RifleMuzzle.Succeeded())
+	{
+		RifleMuzzle = P_RifleMuzzle.Object;
+	}static ConstructorHelpers::FObjectFinder<UParticleSystem> P_HitEffect(TEXT("ParticleSystem'/Game/TPSData/Effects/P_AssaultRifle_IH.P_AssaultRifle_IH'"));
+	if (P_HitEffect.Succeeded())
+	{
+		HitEffect = P_HitEffect.Object;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -122,6 +142,12 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		&AMyCharacter::StartFire);
 	PlayerInputComponent->BindAction(TEXT("Fire"), EInputEvent::IE_Released, this,
 		&AMyCharacter::StopFire);
+}
+
+float AMyCharacter::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent, AController * EventInstigator, AActor * DamageCauser)
+{
+	UE_LOG(LogClass, Warning, TEXT("Damage %f"), DamageAmount);
+	return 0.0f;
 }
 
 void AMyCharacter::MoveForward(float Value)
@@ -288,6 +314,11 @@ void AMyCharacter::StopFire()
 
 void AMyCharacter::OnShot()
 {
+	if (!bIsFire)
+	{
+		return;
+	}
+
 	FVector CameraLocation;
 	FRotator CameraRotation;
 
@@ -308,17 +339,48 @@ void AMyCharacter::OnShot()
 	TArray<AActor*> IgnoreObject;
 	FHitResult OutHit;
 
+
+	FTransform MuzzleTransform = Weapon->GetSocketTransform(TEXT("MuzzleFlash"));
+
 	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldStatic));
 	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldDynamic));
 	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn));
 	IgnoreObject.Add(this);
 
 	bool Result = UKismetSystemLibrary::LineTraceSingleForObjects(GetWorld(), TraceStart, TraceEnd,
-		ObjectTypes, false, IgnoreObject, EDrawDebugTrace::ForDuration,
-		OutHit, true, FLinearColor::Blue, FLinearColor::Red, 5.0f);
+		ObjectTypes, false, IgnoreObject, EDrawDebugTrace::None,
+		OutHit, true, FLinearColor::Blue, FLinearColor::Blue, 5.0f);
+
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), RifleMuzzle, MuzzleTransform);
+
+	UGameplayStatics::SpawnSoundAtLocation(GetWorld(), RifleSound, MuzzleTransform.GetLocation(),
+		MuzzleTransform.GetRotation().Rotator());
 
 	if (Result)
 	{
+		TraceStart = MuzzleTransform.GetLocation();
+		TraceEnd = TraceStart + (OutHit.Location - TraceStart) * 2.0f;
+		
+		bool Result = UKismetSystemLibrary::LineTraceSingleForObjects(GetWorld(), TraceStart, TraceEnd,
+			ObjectTypes, false, IgnoreObject, EDrawDebugTrace::None,
+			OutHit, true, FLinearColor::Green, FLinearColor::Red, 5.0f);
+		if (Result)
+		{
+			UGameplayStatics::ApplyDamage(OutHit.GetActor(), 30.0f, UGameplayStatics::GetPlayerController(GetWorld(), 0), this, UBulletDamageType::StaticClass());
 
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitEffect, OutHit.Location,
+				OutHit.ImpactNormal.Rotation());
+		}
+	}
+
+	UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0)->PlayCameraShake(URifleCameraShake::StaticClass());
+	FRotator CurrentRotation = GetControlRotation();
+	CurrentRotation.Pitch += 1.0f;
+	CurrentRotation.Yaw += FMath::FRandRange(-0.05f, 0.05f);
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetControlRotation(CurrentRotation);
+
+	if (bIsFire)
+	{
+		GetWorldTimerManager().SetTimer(FireTimeHandle, this, &AMyCharacter::OnShot, 0.1f);
 	}
 }
