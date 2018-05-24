@@ -10,6 +10,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Player/WeaponComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -116,6 +117,11 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		&AMyCharacter::LookAround);
 	PlayerInputComponent->BindAction(TEXT("LookAround"), EInputEvent::IE_Released, this,
 		&AMyCharacter::LookForward);
+
+	PlayerInputComponent->BindAction(TEXT("Fire"), EInputEvent::IE_Pressed, this,
+		&AMyCharacter::StartFire);
+	PlayerInputComponent->BindAction(TEXT("Fire"), EInputEvent::IE_Released, this,
+		&AMyCharacter::StopFire);
 }
 
 void AMyCharacter::MoveForward(float Value)
@@ -264,4 +270,55 @@ void AMyCharacter::LookAround()
 void AMyCharacter::LookForward()
 {
 	bUseControllerRotationYaw = true;
+}
+
+void AMyCharacter::StartFire()
+{
+	if (!bIsSprint && !bIsMovingLocked)
+	{
+		bIsFire = true;
+		OnShot();
+	}
+}
+
+void AMyCharacter::StopFire()
+{
+	bIsFire = false;
+}
+
+void AMyCharacter::OnShot()
+{
+	FVector CameraLocation;
+	FRotator CameraRotation;
+
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetPlayerViewPoint(CameraLocation, CameraRotation);
+
+	int SizeX;
+	int SizeY;
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetViewportSize(SizeX, SizeY);
+
+	FVector WorldLocation;
+	FVector WorldDirection;
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->DeprojectScreenPositionToWorld(SizeX / 2, SizeY / 2, WorldLocation, WorldDirection);
+
+	FVector TraceStart = CameraLocation;
+	FVector TraceEnd = CameraLocation + (WorldDirection * 80000.0f);
+
+	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
+	TArray<AActor*> IgnoreObject;
+	FHitResult OutHit;
+
+	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldStatic));
+	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldDynamic));
+	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn));
+	IgnoreObject.Add(this);
+
+	bool Result = UKismetSystemLibrary::LineTraceSingleForObjects(GetWorld(), TraceStart, TraceEnd,
+		ObjectTypes, false, IgnoreObject, EDrawDebugTrace::ForDuration,
+		OutHit, true, FLinearColor::Blue, FLinearColor::Red, 5.0f);
+
+	if (Result)
+	{
+
+	}
 }

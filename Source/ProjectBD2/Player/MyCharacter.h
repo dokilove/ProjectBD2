@@ -51,7 +51,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		class UCameraComponent* Camera;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		class UWeaponComponent* Weapon;
 		
 	FRotator GetAimoffset() const;
@@ -78,6 +78,14 @@ public:
 		void LookAround();
 	UFUNCTION()
 		void LookForward();
+	UFUNCTION()
+		void StartFire();
+	UFUNCTION()
+		void StopFire();
+	void OnShot();
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "Info")
+		bool bIsFire = false;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "Info")
 		bool bIsMovingLocked = false;
 
