@@ -21,4 +21,9 @@ public:
 	virtual void UpdateCamera(float DeltaTime) override; 
 	
 	FVector SpringArmOffset;
+
+	float DefaultFOV;
+
+	float NormalFOV = 90.0f;
+	float IronsightFOV = 60.0f;
 };

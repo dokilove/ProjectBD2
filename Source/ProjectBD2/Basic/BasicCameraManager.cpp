@@ -14,10 +14,18 @@ ABasicCameraManager::ABasicCameraManager()
 void ABasicCameraManager::BeginPlay()
 {
 	Super::BeginPlay();	
+	AMyCharacter* Pawn = PCOwner ? Cast<AMyCharacter>(PCOwner->GetPawn()) : nullptr;
+
+	if (Pawn)
+	{
+		DefaultFOV = Pawn->bIsIronsight ? IronsightFOV : NormalFOV;
+		SpringArmOffset = Pawn->SpringArm->GetRelativeTransform().GetLocation();
+	}
 }
 
 void ABasicCameraManager::UpdateCamera(float DeltaTime)
 {
+	float TargetPOV = 0.0f;
 	FVector TargetOffset;
 	Super::UpdateCamera(DeltaTime); 
 	
@@ -25,6 +33,10 @@ void ABasicCameraManager::UpdateCamera(float DeltaTime)
 
 	if (Pawn)
 	{
+
+		TargetPOV = Pawn->bIsIronsight ? IronsightFOV : NormalFOV;
+		DefaultFOV = FMath::FInterpTo(DefaultFOV, TargetPOV, DeltaTime, 10.0f);
+		SetFOV(DefaultFOV);
 
 		if (Pawn->bIsProne)
 		{
