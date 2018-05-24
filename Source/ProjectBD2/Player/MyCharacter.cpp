@@ -19,6 +19,11 @@ AMyCharacter::AMyCharacter()
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->SetupAttachment(RootComponent);
 	SpringArm->SetRelativeLocation(FVector(0, 30, 70));
+	SpringArm->TargetArmLength = 150.0f;
+
+	NormalSpringArmPosition = SpringArm->GetRelativeTransform().GetLocation();
+	CrouchSpringArmPosition = FVector(NormalSpringArmPosition.X, NormalSpringArmPosition.Y, NormalSpringArmPosition.Z - 40);
+	ProneSpringArmPosition = FVector(100, NormalSpringArmPosition.Y, NormalSpringArmPosition.Z - 100);
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
@@ -213,7 +218,6 @@ void AMyCharacter::TryProne()
 	else
 	{
 		bIsProne = false;
-		UnCrouch();
 		if (bIsIronsight)
 		{
 			SetIronsightSpeed();
@@ -223,6 +227,7 @@ void AMyCharacter::TryProne()
 			ReleaseIronsightSpeed();
 		}
 	}
+	UnCrouch();
 }
 
 FRotator AMyCharacter::GetAimoffset() const

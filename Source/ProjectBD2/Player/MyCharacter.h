@@ -80,4 +80,12 @@ public:
 		void LookForward();
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "Info")
 		bool bIsMovingLocked = false;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "Info")
+		FVector NormalSpringArmPosition;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "Info")
+		FVector CrouchSpringArmPosition;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "Info")
+		FVector ProneSpringArmPosition;
 };
