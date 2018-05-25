@@ -107,4 +107,10 @@ public:
 		class UParticleSystem* HitEffect;
 
 	FTimerHandle FireTimeHandle;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "Info")
+		float CurrentHP;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "Info")
+		float MaxHP = 100.0f;
 };

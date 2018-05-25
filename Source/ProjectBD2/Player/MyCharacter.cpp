@@ -16,6 +16,7 @@
 #include "TimerManager.h"
 #include "Basic/RifleCameraShake.h"
 #include "Basic/BulletDamageType.h"
+#include "Components/CapsuleComponent.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -91,6 +92,8 @@ void AMyCharacter::BeginPlay()
 
 	GetCharacterMovement()->MaxWalkSpeed = JogSpeed;
 	GetCharacterMovement()->MaxWalkSpeedCrouched = WalkSpeed;
+
+	CurrentHP = MaxHP;
 }
 
 // Called every frame
@@ -155,11 +158,25 @@ float AMyCharacter::TakeDamage(float DamageAmount, FDamageEvent const & DamageEv
 	{
 		FPointDamageEvent* PointDamageEvent = (FPointDamageEvent*)&DamageEvent;
 		UE_LOG(LogClass, Warning, TEXT("FPointDamageEvent %f %s"), DamageAmount, *PointDamageEvent->HitInfo.BoneName.ToString());
+
+		if (PointDamageEvent->HitInfo.BoneName.Compare(FName("head")) == 0)
+		{
+			CurrentHP = 0;
+		}
+
+		CurrentHP -= DamageAmount;
+		if (CurrentHP <= 0.0f)
+		{
+			CurrentHP = 0;
+			GetMesh()->SetSimulatePhysics(true);
+			GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		}
 	}
 	else if (DamageEvent.IsOfType(FDamageEvent::ClassID))
 	{
 		UE_LOG(LogClass, Warning, TEXT("Damage %f"), DamageAmount);
 	}
+	
 
 	return 0.0f;
 }
