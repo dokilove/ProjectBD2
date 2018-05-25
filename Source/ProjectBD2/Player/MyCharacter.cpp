@@ -17,6 +17,8 @@
 #include "Basic/RifleCameraShake.h"
 #include "Basic/BulletDamageType.h"
 #include "Components/CapsuleComponent.h"
+#include "Animation/AnimMontage.h"
+#include "Animation/AnimInstance.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -78,11 +80,18 @@ AMyCharacter::AMyCharacter()
 	if (P_RifleMuzzle.Succeeded())
 	{
 		RifleMuzzle = P_RifleMuzzle.Object;
-	}static ConstructorHelpers::FObjectFinder<UParticleSystem> P_HitEffect(TEXT("ParticleSystem'/Game/TPSData/Effects/P_AssaultRifle_IH.P_AssaultRifle_IH'"));
+	}
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> P_HitEffect(TEXT("ParticleSystem'/Game/TPSData/Effects/P_AssaultRifle_IH.P_AssaultRifle_IH'"));
 	if (P_HitEffect.Succeeded())
 	{
 		HitEffect = P_HitEffect.Object;
 	}
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> Anim_Dead(TEXT("AnimMontage'/Game/TPSData/Male_Grunt/Animations/Death_1_Montage.Death_1_Montage'"));
+	if (Anim_Dead.Succeeded())
+	{
+		DeadAnim = Anim_Dead.Object;
+	}
+
 }
 
 // Called when the game starts or when spawned
@@ -149,6 +158,11 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 float AMyCharacter::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent, AController * EventInstigator, AActor * DamageCauser)
 {
+	if (CurrentHP <= 0.0f)
+	{
+		return 0.0f;
+	}
+
 	if (DamageEvent.IsOfType(FRadialDamageEvent::ClassID))
 	{
 		FRadialDamageEvent* RadialDamageEvent = (FRadialDamageEvent*)&DamageEvent;
@@ -168,8 +182,13 @@ float AMyCharacter::TakeDamage(float DamageAmount, FDamageEvent const & DamageEv
 		if (CurrentHP <= 0.0f)
 		{
 			CurrentHP = 0;
-			GetMesh()->SetSimulatePhysics(true);
+			//GetMesh()->SetSimulatePhysics(true);
 			GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+			if (!GetMesh()->GetAnimInstance()->Montage_IsPlaying(DeadAnim))
+			{
+				PlayAnimMontage(DeadAnim);
+			}
 		}
 	}
 	else if (DamageEvent.IsOfType(FDamageEvent::ClassID))

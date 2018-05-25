@@ -113,4 +113,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "Info")
 		float MaxHP = 100.0f;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		UAnimMontage* DeadAnim;
 };
