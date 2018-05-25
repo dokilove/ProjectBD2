@@ -20,6 +20,7 @@ void UMyCharacterAnimInstance::NativeUpdateAnimation_WorkerThread(float DeltaSec
 		bIsSprint = Pawn->bIsSprint;
 		bIsProne = Pawn->bIsProne;
 		bIsMovingLocked = Pawn->bIsMovingLocked;
+		bIsFire = Pawn->bIsFire;
 	}
 }
 

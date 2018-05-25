@@ -38,6 +38,8 @@ public:
 		bool bIsProne;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "Info")
 		bool bIsMovingLocked;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "Info")
+		bool bIsFire;
 	UFUNCTION()
 		void AnimNotify_LockMove();
 	UFUNCTION()

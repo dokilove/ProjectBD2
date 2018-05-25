@@ -86,7 +86,7 @@ AMyCharacter::AMyCharacter()
 	{
 		HitEffect = P_HitEffect.Object;
 	}
-	static ConstructorHelpers::FObjectFinder<UAnimMontage> Anim_Dead(TEXT("AnimMontage'/Game/TPSData/Male_Grunt/Animations/Death_1_Montage.Death_1_Montage'"));
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> Anim_Dead(TEXT("AnimMontage'/Game/TPSData/Male_Grunt/Animations/AnimMontage/Death_1_Montage.Death_1_Montage'"));
 	if (Anim_Dead.Succeeded())
 	{
 		DeadAnim = Anim_Dead.Object;
@@ -158,11 +158,6 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 float AMyCharacter::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent, AController * EventInstigator, AActor * DamageCauser)
 {
-	if (CurrentHP <= 0.0f)
-	{
-		return 0.0f;
-	}
-
 	if (DamageEvent.IsOfType(FRadialDamageEvent::ClassID))
 	{
 		FRadialDamageEvent* RadialDamageEvent = (FRadialDamageEvent*)&DamageEvent;
