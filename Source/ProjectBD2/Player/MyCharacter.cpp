@@ -146,7 +146,21 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 float AMyCharacter::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent, AController * EventInstigator, AActor * DamageCauser)
 {
-	UE_LOG(LogClass, Warning, TEXT("Damage %f"), DamageAmount);
+	if (DamageEvent.IsOfType(FRadialDamageEvent::ClassID))
+	{
+		FRadialDamageEvent* RadialDamageEvent = (FRadialDamageEvent*)&DamageEvent;
+		UE_LOG(LogClass, Warning, TEXT("FRadialDamageEvent %f"), DamageAmount);
+	}
+	else if(DamageEvent.IsOfType(FPointDamageEvent::ClassID))
+	{
+		FPointDamageEvent* PointDamageEvent = (FPointDamageEvent*)&DamageEvent;
+		UE_LOG(LogClass, Warning, TEXT("FPointDamageEvent %f %s"), DamageAmount, *PointDamageEvent->HitInfo.BoneName.ToString());
+	}
+	else if (DamageEvent.IsOfType(FDamageEvent::ClassID))
+	{
+		UE_LOG(LogClass, Warning, TEXT("Damage %f"), DamageAmount);
+	}
+
 	return 0.0f;
 }
 
@@ -344,7 +358,7 @@ void AMyCharacter::OnShot()
 
 	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldStatic));
 	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldDynamic));
-	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn));
+	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_PhysicsBody));
 	IgnoreObject.Add(this);
 
 	bool Result = UKismetSystemLibrary::LineTraceSingleForObjects(GetWorld(), TraceStart, TraceEnd,
@@ -366,7 +380,12 @@ void AMyCharacter::OnShot()
 			OutHit, true, FLinearColor::Green, FLinearColor::Red, 5.0f);
 		if (Result)
 		{
-			UGameplayStatics::ApplyDamage(OutHit.GetActor(), 30.0f, UGameplayStatics::GetPlayerController(GetWorld(), 0), this, UBulletDamageType::StaticClass());
+			UGameplayStatics::ApplyDamage(OutHit.GetActor(), 0.0f, UGameplayStatics::GetPlayerController(GetWorld(), 0), this, UBulletDamageType::StaticClass());
+
+			UGameplayStatics::ApplyRadialDamage(GetWorld(), 0.0f, OutHit.ImpactPoint, 300.0f, UBulletDamageType::StaticClass(), IgnoreObject, this, UGameplayStatics::GetPlayerController(GetWorld(), 0), false);
+
+			UGameplayStatics::ApplyPointDamage(OutHit.GetActor(), 30.0f, OutHit.ImpactPoint - TraceStart, OutHit,
+				UGameplayStatics::GetPlayerController(GetWorld(), 0), this, UBulletDamageType::StaticClass());
 
 			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitEffect, OutHit.Location,
 				OutHit.ImpactNormal.Rotation());
