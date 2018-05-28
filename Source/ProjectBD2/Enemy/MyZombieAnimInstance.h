@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include "Enemy/MyZombie.h"
 #include "MyZombieAnimInstance.generated.h"
 
 /**
@@ -18,4 +19,10 @@ class PROJECTBD2_API UMyZombieAnimInstance : public UAnimInstance
 public:
 	UMyZombieAnimInstance();
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
+		EZombieState CurrentState;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
+		EZombieAnimState CurrentAnimState;
 };
