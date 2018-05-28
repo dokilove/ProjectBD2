@@ -70,6 +70,11 @@ void AMyZombie::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 float AMyZombie::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent, AController * EventInstigator, AActor * DamageCauser)
 {
+	if (CurrentState == EZombieState::Dead)
+	{
+		return 0.0f;
+	}
+
 	float Damage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
 	if (DamageEvent.IsOfType(FPointDamageEvent::ClassID))
@@ -87,7 +92,9 @@ float AMyZombie::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent
 		CurrentHP = 0;
 
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		GetMesh()->SetSimulatePhysics(true);
+		//GetMesh()->SetSimulatePhysics(true);
+		CurrentState = EZombieState::Dead;
+
 	}
 
 	return 0.0f;
