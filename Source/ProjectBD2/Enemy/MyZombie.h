@@ -62,4 +62,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
 		EZombieAnimState CurrentAnimState;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
+		TArray <class APatrolPoint*> PatrolPoints;
 };
