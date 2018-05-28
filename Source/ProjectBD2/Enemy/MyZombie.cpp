@@ -4,6 +4,8 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "UObject/ConstructorHelpers.h"
+#include "BehaviorTree/BehaviorTree.h"
+#include "Enemy/ZombieAIController.h"
 
 
 // Sets default values
@@ -31,6 +33,14 @@ AMyZombie::AMyZombie()
 
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	GetMesh()->SetCollisionObjectType(ECollisionChannel::ECC_PhysicsBody);
+
+	AIControllerClass = AZombieAIController::StaticClass();
+
+	static ConstructorHelpers::FObjectFinder<UBehaviorTree>BT_Zombie(TEXT("BehaviorTree'/Game/Blueprints/Enemy/AI/BT_Zombie.BT_Zombie'"));
+	if (BT_Zombie.Succeeded())
+	{
+		BehaviorTree = BT_Zombie.Object;
+	}
 
 }
 

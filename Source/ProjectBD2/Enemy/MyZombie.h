@@ -33,4 +33,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Info")
 		float MaxHP = 100.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Info")
+		class UBehaviorTree* BehaviorTree;
+
 };

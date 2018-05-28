@@ -4,6 +4,9 @@
 #include "Enemy/MyZombie.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Enemy/MyZombie.h"
+#include "BehaviorTree/BehaviorTree.h"
+
 
 AZombieAIController::AZombieAIController()
 {
@@ -19,5 +22,7 @@ void AZombieAIController::Possess(APawn* InPawn)
 	AMyZombie* Pawn = Cast<AMyZombie>(InPawn);
 	if (Pawn)
 	{
+		BB_Zombie->InitializeBlackboard(*(Pawn->BehaviorTree->BlackboardAsset));
+		BT_Zombie->StartTree(*(Pawn->BehaviorTree), EBTExecutionMode::Looped);
 	}
 }
