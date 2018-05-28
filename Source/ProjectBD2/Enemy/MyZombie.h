@@ -26,6 +26,11 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 	
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Info")
+		float CurrentHP;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Info")
+		float MaxHP = 100.0f;
+
 };

@@ -39,6 +39,7 @@ void AMyZombie::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	CurrentHP = MaxHP;
 }
 
 // Called every frame
@@ -53,5 +54,30 @@ void AMyZombie::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+float AMyZombie::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent, AController * EventInstigator, AActor * DamageCauser)
+{
+	float Damage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+	if (DamageEvent.IsOfType(FPointDamageEvent::ClassID))
+	{
+		FPointDamageEvent* PointDamageEvent = (FPointDamageEvent*)(&DamageEvent);
+
+		if (PointDamageEvent->HitInfo.BoneName.Compare(TEXT("head")) == 0)
+		{
+			CurrentHP = 0;
+		}
+	}
+	CurrentHP -= Damage;
+	if (CurrentHP <= 0.0f)
+	{
+		CurrentHP = 0;
+
+		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		GetMesh()->SetSimulatePhysics(true);
+	}
+
+	return 0.0f;
 }
 
