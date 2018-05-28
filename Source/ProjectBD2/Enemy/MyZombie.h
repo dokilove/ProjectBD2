@@ -6,6 +6,27 @@
 #include "GameFramework/Character.h"
 #include "MyZombie.generated.h"
 
+UENUM(BlueprintType)
+enum class EZombieState : uint8
+{
+	Normal UMETA(Display = "Normal"),
+	Chase UMETA(Display = "Chase"),
+	Battle UMETA(Display = "Battle"),
+	Dead UMETA(Display = "Dead"),
+};
+
+UENUM(BlueprintType)
+enum class EZombieAnimState : uint8
+{
+	Idle UMETA(Display = "Idle"),
+	Walk UMETA(Display = "Walk"),
+	Run UMETA(Display = "Run"),
+	Scream UMETA(Display = "Scream"),
+	Death UMETA(Display = "Death"),
+	Attack01 UMETA(Display = "Attack01"),
+	Attack02 UMETA(Display = "Attack02"),
+};
+
 UCLASS()
 class PROJECTBD2_API AMyZombie : public ACharacter
 {
@@ -35,5 +56,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Info")
 		class UBehaviorTree* BehaviorTree;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
+		EZombieState CurrentState;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
+		EZombieAnimState CurrentAnimState;
 
 };

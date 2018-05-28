@@ -42,6 +42,8 @@ AMyZombie::AMyZombie()
 		BehaviorTree = BT_Zombie.Object;
 	}
 
+	CurrentState = EZombieState::Normal;
+	CurrentAnimState = EZombieAnimState::Idle;
 }
 
 // Called when the game starts or when spawned
