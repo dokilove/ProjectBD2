@@ -40,6 +40,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -48,6 +49,10 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+	UFUNCTION()
+	void OnSeePawn(APawn * Pawn);
+	UFUNCTION()
+	void OnHearNoise(APawn * Pawn, const FVector & Location, float Volume);
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Info")
 		float CurrentHP;
@@ -70,4 +75,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
 		TArray <class APatrolPoint*> PatrolPoints;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "AI")
+		class UPawnSensingComponent* PawnSensing;
 };

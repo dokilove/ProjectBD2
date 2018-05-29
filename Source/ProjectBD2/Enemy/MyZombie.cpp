@@ -8,6 +8,7 @@
 #include "Enemy/ZombieAIController.h"
 #include "Enemy/PatrolPoint.h"
 #include "Kismet/GameplayStatics.h"
+#include "Perception/PawnSensingComponent.h"
 
 
 // Sets default values
@@ -46,6 +47,10 @@ AMyZombie::AMyZombie()
 
 	CurrentState = EZombieState::Normal;
 	CurrentAnimState = EZombieAnimState::Idle;
+
+	PawnSensing = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensing"));
+	PawnSensing->SightRadius = 1500.0f;
+	PawnSensing->SetPeripheralVisionAngle(60.0f);
 }
 
 // Called when the game starts or when spawned
@@ -62,6 +67,9 @@ void AMyZombie::BeginPlay()
 	{
 		PatrolPoints.Add(Cast<APatrolPoint>(PatrolPoint));
 	}
+
+	PawnSensing->OnSeePawn.AddDynamic(this, &AMyZombie::OnSeePawn);
+	PawnSensing->OnHearNoise.AddDynamic(this, &AMyZombie::OnHearNoise);
 }
 
 // Called every frame
@@ -108,5 +116,15 @@ float AMyZombie::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent
 	}
 
 	return 0.0f;
+}
+
+void AMyZombie::OnSeePawn(APawn* Pawn)
+{
+	UE_LOG(LogClass, Warning, TEXT("see %s"), *Pawn->GetName());
+}
+
+void AMyZombie::OnHearNoise(APawn* Pawn, const FVector& Location, float Volume)
+{
+
 }
 
