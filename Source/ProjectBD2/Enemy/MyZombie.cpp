@@ -9,7 +9,8 @@
 #include "Enemy/PatrolPoint.h"
 #include "Kismet/GameplayStatics.h"
 #include "Perception/PawnSensingComponent.h"
-
+#include "Player/MyCharacter.h"
+#include "BehaviorTree/BlackboardComponent.h"
 
 // Sets default values
 AMyZombie::AMyZombie()
@@ -111,8 +112,12 @@ float AMyZombie::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent
 
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		//GetMesh()->SetSimulatePhysics(true);
-		CurrentState = EZombieState::Dead;
-
+		AZombieAIController* AIC = Cast<AZombieAIController>(GetController());
+		if (AIC && AIC->IsValidLowLevelFast())
+		{
+			CurrentState = EZombieState::Dead;
+			AIC->BB_Zombie->SetValueAsEnum(FName(TEXT("CurrentState")), (uint8)CurrentState);
+		}
 	}
 
 	return 0.0f;
@@ -120,7 +125,21 @@ float AMyZombie::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent
 
 void AMyZombie::OnSeePawn(APawn* Pawn)
 {
-	UE_LOG(LogClass, Warning, TEXT("see %s"), *Pawn->GetName());
+	//UE_LOG(LogClass, Warning, TEXT("see %s"), *Pawn->GetName());
+	AMyCharacter* Player = Cast<AMyCharacter>(Pawn);
+	if (Pawn && Pawn->IsValidLowLevelFast())
+	{
+		AZombieAIController* AIC = Cast<AZombieAIController>(GetController());
+		if (AIC && AIC->IsValidLowLevelFast())
+		{
+			CurrentState = EZombieState::Chase;
+			CurrentAnimState = EZombieAnimState::Run;
+
+			AIC->BB_Zombie->SetValueAsObject(FName(TEXT("Target")), Player);
+			AIC->BB_Zombie->SetValueAsEnum(FName(TEXT("CurrentState")), (uint8)CurrentState);
+		}
+	}
+
 }
 
 void AMyZombie::OnHearNoise(APawn* Pawn, const FVector& Location, float Volume)

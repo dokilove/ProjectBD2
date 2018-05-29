@@ -15,6 +15,8 @@ EBTNodeResult::Type UBTTask_ChangeState::ExecuteTask(UBehaviorTreeComponent & Ow
 		Zombie->CurrentState = NewZombieState;
 		Zombie->CurrentAnimState = NewZombieAnimState;
 
+		OwnerComp.GetBlackboardComponent()->SetValueAsEnum(GetSelectedBlackboardKey(), (uint8)Zombie->CurrentState);
+
 		return EBTNodeResult::Succeeded;
 	}
 
