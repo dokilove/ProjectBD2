@@ -72,7 +72,17 @@ void UBTService_CheckState::TickNode(UBehaviorTreeComponent & OwnerComp, uint8 *
 				{
 					float Range = FVector::Distance(Zombie->GetActorLocation(), Player->GetActorLocation());
 					
-					if (Range > Zombie->PawnSensing->SightRadius)
+					if (Range > Zombie->AttackRange)
+					{
+						Zombie->CurrentState = EZombieState::Chase;
+						OwnerComp.GetBlackboardComponent()->SetValueAsEnum(FName(TEXT("CurrentState")), (uint8)Zombie->CurrentState);
+					}
+					else if (Player->CurrentHP <= 0.0f)
+					{
+						Zombie->CurrentState = EZombieState::Normal;
+						OwnerComp.GetBlackboardComponent()->SetValueAsEnum(FName(TEXT("CurrentState")), (uint8)Zombie->CurrentState);
+					}
+					else if (Range > Zombie->PawnSensing->SightRadius)
 					{
 						Zombie->CurrentState = EZombieState::Normal;
 						OwnerComp.GetBlackboardComponent()->SetValueAsEnum(FName(TEXT("CurrentState")), (uint8)Zombie->CurrentState);

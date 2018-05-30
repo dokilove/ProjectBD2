@@ -22,3 +22,15 @@ void UMyZombieAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	}
 
 }
+
+void UMyZombieAnimInstance::AnimNotify_OnAttack(UAnimNotify* Notify)
+{
+	//UE_LOG(LogClass, Warning, TEXT("OnAttack"));
+
+	AMyZombie* Zombie = Cast<AMyZombie>(TryGetPawnOwner());
+
+	if (Zombie && Zombie->IsValidLowLevelFast())
+	{
+		Zombie->OnAttack();
+	}
+}

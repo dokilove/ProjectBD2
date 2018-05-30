@@ -127,10 +127,10 @@ void AMyZombie::OnSeePawn(APawn* Pawn)
 {
 	//UE_LOG(LogClass, Warning, TEXT("see %s"), *Pawn->GetName());
 	AMyCharacter* Player = Cast<AMyCharacter>(Pawn);
-	if (Pawn && Pawn->IsValidLowLevelFast())
+	if (Pawn && Pawn->IsValidLowLevelFast() && Player->CurrentHP > 0.0f)
 	{
 		AZombieAIController* AIC = Cast<AZombieAIController>(GetController());
-		if (AIC && AIC->IsValidLowLevelFast())
+		if (AIC && AIC->IsValidLowLevelFast() && CurrentState != EZombieState::Battle)
 		{
 			CurrentState = EZombieState::Chase;
 			CurrentAnimState = EZombieAnimState::Run;
@@ -145,5 +145,16 @@ void AMyZombie::OnSeePawn(APawn* Pawn)
 void AMyZombie::OnHearNoise(APawn* Pawn, const FVector& Location, float Volume)
 {
 
+}
+
+void AMyZombie::OnAttack()
+{
+	AZombieAIController* AIC = Cast<AZombieAIController>(GetController());
+	if (AIC && AIC->IsValidLowLevelFast())
+	{
+		AActor* Player = Cast<AActor>(AIC->BB_Zombie->GetValueAsObject(FName(TEXT("Target"))));
+
+		UGameplayStatics::ApplyDamage(Player, AttackDamage, AIC, this, nullptr);
+	}
 }
 
