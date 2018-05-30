@@ -127,10 +127,10 @@ void AMyZombie::OnSeePawn(APawn* Pawn)
 {
 	//UE_LOG(LogClass, Warning, TEXT("see %s"), *Pawn->GetName());
 	AMyCharacter* Player = Cast<AMyCharacter>(Pawn);
-	if (Pawn && Pawn->IsValidLowLevelFast() && Player->CurrentHP > 0.0f)
+	if (Pawn && Pawn->IsValidLowLevelFast() && Player->CurrentHP > 0.0f && CurrentState == EZombieState::Normal)
 	{
 		AZombieAIController* AIC = Cast<AZombieAIController>(GetController());
-		if (AIC && AIC->IsValidLowLevelFast() && CurrentState != EZombieState::Battle)
+		if (AIC && AIC->IsValidLowLevelFast())
 		{
 			CurrentState = EZombieState::Chase;
 			CurrentAnimState = EZombieAnimState::Run;

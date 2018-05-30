@@ -20,74 +20,74 @@ void UBTService_CheckState::TickNode(UBehaviorTreeComponent & OwnerComp, uint8 *
 		{
 			case EZombieState::Chase:
 			{
-				AActor* Player = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(FName(TEXT("Target"))));
-				if (Player && Player->IsValidLowLevelFast())
-				{
-					float Range = FVector::Distance(Zombie->GetActorLocation(), Player->GetActorLocation());
+				//AActor* Player = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(FName(TEXT("Target"))));
+				//if (Player && Player->IsValidLowLevelFast())
+				//{
+				//	float Range = FVector::Distance(Zombie->GetActorLocation(), Player->GetActorLocation());
 
-					if (Range <= Zombie->AttackRange)
-					{
-						Zombie->CurrentState = EZombieState::Battle;
-						OwnerComp.GetBlackboardComponent()->SetValueAsEnum(FName(TEXT("CurrentState")), (uint8)Zombie->CurrentState);
-					}
-					else if (Range > Zombie->PawnSensing->SightRadius)
-					{
-						Zombie->CurrentState = EZombieState::Normal;
-						OwnerComp.GetBlackboardComponent()->SetValueAsEnum(FName(TEXT("CurrentState")), (uint8)Zombie->CurrentState);
-					}
-					else
-					{
-						FVector TraceStart = Zombie->GetActorLocation();
-						FVector TraceEnd = Player->GetActorLocation();
-						TArray<TEnumAsByte<EObjectTypeQuery> > ObjectTypes;
-						TArray<AActor*> ActorsToIgnore;
-						FHitResult OutHit;
+				//	if (Range <= Zombie->AttackRange)
+				//	{
+				//		Zombie->CurrentState = EZombieState::Battle;
+				//		OwnerComp.GetBlackboardComponent()->SetValueAsEnum(FName(TEXT("CurrentState")), (uint8)Zombie->CurrentState);
+				//	}
+				//	else if (Range > Zombie->PawnSensing->SightRadius)
+				//	{
+				//		Zombie->CurrentState = EZombieState::Normal;
+				//		OwnerComp.GetBlackboardComponent()->SetValueAsEnum(FName(TEXT("CurrentState")), (uint8)Zombie->CurrentState);
+				//	}
+				//	else
+				//	{
+				//		FVector TraceStart = Zombie->GetActorLocation();
+				//		FVector TraceEnd = Player->GetActorLocation();
+				//		TArray<TEnumAsByte<EObjectTypeQuery> > ObjectTypes;
+				//		TArray<AActor*> ActorsToIgnore;
+				//		FHitResult OutHit;
 
-						ObjectTypes
-							.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldDynamic));
-						ObjectTypes
-							.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldStatic));
-						ObjectTypes
-							.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn));
-						ActorsToIgnore.Add(Zombie);
+				//		ObjectTypes
+				//			.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldDynamic));
+				//		ObjectTypes
+				//			.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldStatic));
+				//		ObjectTypes
+				//			.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn));
+				//		ActorsToIgnore.Add(Zombie);
 
-						bool Result = UKismetSystemLibrary::LineTraceSingleForObjects(GetWorld(), TraceStart, TraceEnd, ObjectTypes, false, ActorsToIgnore, EDrawDebugTrace::ForDuration, OutHit, true, FLinearColor::Red, FLinearColor::Yellow, 5.0f);
+				//		bool Result = UKismetSystemLibrary::LineTraceSingleForObjects(GetWorld(), TraceStart, TraceEnd, ObjectTypes, false, ActorsToIgnore, EDrawDebugTrace::ForDuration, OutHit, true, FLinearColor::Red, FLinearColor::Yellow, 5.0f);
 
-						if (Result)
-						{
-							if (!OutHit.GetActor()->ActorHasTag(FName(TEXT("Player"))))
-							{
-								Zombie->CurrentState = EZombieState::Normal;
-								OwnerComp.GetBlackboardComponent()->SetValueAsEnum(FName(TEXT("CurrentState")), (uint8)Zombie->CurrentState);
-							}
-						}
-					}
-				}
+				//		if (Result)
+				//		{
+				//			if (!OutHit.GetActor()->ActorHasTag(FName(TEXT("Player"))))
+				//			{
+				//				Zombie->CurrentState = EZombieState::Normal;
+				//				OwnerComp.GetBlackboardComponent()->SetValueAsEnum(FName(TEXT("CurrentState")), (uint8)Zombie->CurrentState);
+				//			}
+				//		}
+				//	}
+				//}
 			}
 			break;
 			case EZombieState::Battle:
 			{
-				AMyCharacter* Player = Cast<AMyCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(FName(TEXT("Target"))));
-				if (Player && Player->IsValidLowLevelFast())
-				{
-					float Range = FVector::Distance(Zombie->GetActorLocation(), Player->GetActorLocation());
-					
-					if (Range > Zombie->AttackRange)
-					{
-						Zombie->CurrentState = EZombieState::Chase;
-						OwnerComp.GetBlackboardComponent()->SetValueAsEnum(FName(TEXT("CurrentState")), (uint8)Zombie->CurrentState);
-					}
-					else if (Player->CurrentHP <= 0.0f)
-					{
-						Zombie->CurrentState = EZombieState::Normal;
-						OwnerComp.GetBlackboardComponent()->SetValueAsEnum(FName(TEXT("CurrentState")), (uint8)Zombie->CurrentState);
-					}
-					else if (Range > Zombie->PawnSensing->SightRadius)
-					{
-						Zombie->CurrentState = EZombieState::Normal;
-						OwnerComp.GetBlackboardComponent()->SetValueAsEnum(FName(TEXT("CurrentState")), (uint8)Zombie->CurrentState);
-					}
-				}
+				//AMyCharacter* Player = Cast<AMyCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(FName(TEXT("Target"))));
+				//if (Player && Player->IsValidLowLevelFast())
+				//{
+				//	float Range = FVector::Distance(Zombie->GetActorLocation(), Player->GetActorLocation());
+				//	
+				//	if (Range > Zombie->AttackRange)
+				//	{
+				//		Zombie->CurrentState = EZombieState::Chase;
+				//		OwnerComp.GetBlackboardComponent()->SetValueAsEnum(FName(TEXT("CurrentState")), (uint8)Zombie->CurrentState);
+				//	}
+				//	else if (Player->CurrentHP <= 0.0f)
+				//	{
+				//		Zombie->CurrentState = EZombieState::Normal;
+				//		OwnerComp.GetBlackboardComponent()->SetValueAsEnum(FName(TEXT("CurrentState")), (uint8)Zombie->CurrentState);
+				//	}
+				//	else if (Range > Zombie->PawnSensing->SightRadius)
+				//	{
+				//		Zombie->CurrentState = EZombieState::Normal;
+				//		OwnerComp.GetBlackboardComponent()->SetValueAsEnum(FName(TEXT("CurrentState")), (uint8)Zombie->CurrentState);
+				//	}
+				//}
 			}
 			break;
 		}
