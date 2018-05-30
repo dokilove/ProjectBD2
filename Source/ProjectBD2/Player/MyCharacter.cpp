@@ -92,6 +92,7 @@ AMyCharacter::AMyCharacter()
 		DeadAnim = Anim_Dead.Object;
 	}
 
+	Tags.Add(FName(TEXT("Player")));
 }
 
 // Called when the game starts or when spawned
