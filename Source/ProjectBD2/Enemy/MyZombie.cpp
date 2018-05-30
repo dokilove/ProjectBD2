@@ -11,6 +11,8 @@
 #include "Perception/PawnSensingComponent.h"
 #include "Player/MyCharacter.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Components/WidgetComponent.h"
+#include "Enemy/UI/ZombieHPBarWidgetBase.h"
 
 // Sets default values
 AMyZombie::AMyZombie()
@@ -52,6 +54,17 @@ AMyZombie::AMyZombie()
 	PawnSensing = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensing"));
 	PawnSensing->SightRadius = 1500.0f;
 	PawnSensing->SetPeripheralVisionAngle(60.0f);
+
+	Widget = CreateDefaultSubobject<UWidgetComponent>(TEXT("Widget"));
+	Widget->SetupAttachment(RootComponent);
+
+	static ConstructorHelpers::FClassFinder<UZombieHPBarWidgetBase> WidgetClass(TEXT("WidgetBlueprint'/Game/Blueprints/Enemy/UI/ZombieHPBarWidget.ZombieHPBarWidget_C'"));
+	if (WidgetClass.Succeeded())
+	{
+		Widget->SetWidgetClass(WidgetClass.Class);
+	}
+	Widget->SetDrawSize(FVector2D(100, 30));
+	Widget->SetRelativeLocation(FVector(0, 0, 120));
 }
 
 // Called when the game starts or when spawned
@@ -78,6 +91,19 @@ void AMyZombie::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	FVector CameraLocation;
+	FRotator CameraRotation;
+
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetPlayerViewPoint(CameraLocation, CameraRotation);
+
+	FVector Dir = CameraLocation - Widget->GetComponentLocation();
+	Widget->SetWorldRotation(Dir.Rotation());
+
+	UZombieHPBarWidgetBase* HPBar = Cast<UZombieHPBarWidgetBase>(Widget->GetUserWidgetObject());
+	if (HPBar)
+	{
+		HPBar->CurrentHP = CurrentHP / MaxHP;
+	}
 }
 
 // Called to bind functionality to input
@@ -118,6 +144,7 @@ float AMyZombie::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent
 			CurrentState = EZombieState::Dead;
 			AIC->BB_Zombie->SetValueAsEnum(FName(TEXT("CurrentState")), (uint8)CurrentState);
 		}
+		Widget->SetVisibility(false);
 	}
 
 	return 0.0f;

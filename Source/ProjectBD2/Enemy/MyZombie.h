@@ -81,6 +81,8 @@ public:
 		TArray <class APatrolPoint*> PatrolPoints;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "AI")
 		class UPawnSensingComponent* PawnSensing;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "UI")
+		class UWidgetComponent* Widget;
 
 	void OnAttack();
 };
