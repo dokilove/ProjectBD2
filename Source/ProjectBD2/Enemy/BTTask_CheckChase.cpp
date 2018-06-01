@@ -48,7 +48,7 @@ EBTNodeResult::Type UBTTask_CheckChase::ExecuteTask(UBehaviorTreeComponent& Owne
 					.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn));
 				ActorsToIgnore.Add(Zombie);
 
-				bool Result = UKismetSystemLibrary::LineTraceSingleForObjects(GetWorld(), TraceStart, TraceEnd, ObjectTypes, false, ActorsToIgnore, EDrawDebugTrace::ForDuration, OutHit, true, FLinearColor::Red, FLinearColor::Yellow, 5.0f);
+				bool Result = UKismetSystemLibrary::LineTraceSingleForObjects(GetWorld(), TraceStart, TraceEnd, ObjectTypes, false, ActorsToIgnore, EDrawDebugTrace::None, OutHit, true, FLinearColor::Red, FLinearColor::Yellow, 5.0f);
 
 				if (Result)
 				{

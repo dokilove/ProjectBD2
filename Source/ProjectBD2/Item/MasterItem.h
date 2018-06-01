@@ -18,11 +18,19 @@ class PROJECTBD2_API AMasterItem : public AStaticMeshActor
 public:
 	AMasterItem();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	virtual void BeginPlay() override;
+	UFUNCTION()
+	void OnBeginOverlap(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
+	UFUNCTION()
+	void OnEndOverlap(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex);
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		class USphereComponent* Sphere;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		class UItemDataTableComponent* ItemDataTable;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
+		int ItemIndex;
 	
 };

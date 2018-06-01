@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Item/ItemDataTable.h"
 #include "ItemDataTableComponent.generated.h"
 
 
@@ -24,6 +25,9 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-		
-	
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		class UDataTable* DataTable;
+	UFUNCTION(BlueprintCallable)
+		FItemDataTable& GetItemData(int ItemIndex);
 };

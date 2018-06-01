@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "ItemDataTableComponent.h"
+#include "ConstructorHelpers.h"
 
 // Sets default values for this component's properties
 UItemDataTableComponent::UItemDataTableComponent()
@@ -10,6 +11,12 @@ UItemDataTableComponent::UItemDataTableComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 
 	// ...
+
+	static ConstructorHelpers::FObjectFinder<UDataTable> DT_ItemDataTable(TEXT("DataTable'/Game/Blueprints/Data/ItemTable.ItemTable'"));
+	if (DT_ItemDataTable.Succeeded())
+	{
+		DataTable = DT_ItemDataTable.Object;
+	}
 }
 
 
@@ -29,5 +36,11 @@ void UItemDataTableComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+}
+
+FItemDataTable & UItemDataTableComponent::GetItemData(int ItemIndex)
+{
+	// TODO: insert return statement here
+	return *DataTable->FindRow<FItemDataTable>(*FString::FromInt(ItemIndex), TEXT("ItemIndex"), true);
 }
 
