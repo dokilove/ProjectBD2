@@ -119,4 +119,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		UAnimMontage* DeadAnim;
+
+	TArray<class AMasterItem*> CanPickupList;
+
+	void AddPickupItemList(class AMasterItem* Item);
+	void RemovePickupItemList(class AMasterItem* Item);
+	void ViewItemTooltip();
 };

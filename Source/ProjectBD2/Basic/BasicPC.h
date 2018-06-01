@@ -17,4 +17,9 @@ class PROJECTBD2_API ABasicPC : public APlayerController
 	
 public:
 	ABasicPC();
+
+	virtual void BeginPlay() override;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		class UItemTooltipWidgetBase* ItemTooltip;
 };

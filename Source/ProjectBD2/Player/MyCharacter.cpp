@@ -19,6 +19,11 @@
 #include "Components/CapsuleComponent.h"
 #include "Animation/AnimMontage.h"
 #include "Animation/AnimInstance.h"
+#include "Item/MasterItem.h"
+#include "Basic/BasicPC.h"
+#include "UI/ItemTooltipWidgetBase.h"
+#include "Components/TextBlock.h"
+#include "Item/ItemDataTableComponent.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -449,5 +454,51 @@ void AMyCharacter::OnShot()
 	if (bIsFire)
 	{
 		GetWorldTimerManager().SetTimer(FireTimeHandle, this, &AMyCharacter::OnShot, 0.1f);
+	}
+}
+
+void AMyCharacter::AddPickupItemList(AMasterItem * Item)
+{
+	if (Item && !Item->IsPendingKill())
+	{
+		CanPickupList.Add(Item);
+	}
+
+	ViewItemTooltip();
+}
+
+void AMyCharacter::RemovePickupItemList(AMasterItem * Item)
+{
+	if (Item)
+	{
+		CanPickupList.Remove(Item);
+	}
+
+	ViewItemTooltip();
+}
+
+void AMyCharacter::ViewItemTooltip()
+{
+	ABasicPC* PC = Cast<ABasicPC>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	if (!PC)
+	{
+		return;
+	}
+
+	if (CanPickupList.Num() == 0)
+	{
+		PC->ItemTooltip->SetVisibility(ESlateVisibility::Collapsed);
+		return;
+	}
+
+	AMasterItem* ClosestItem = CanPickupList[0];
+	if (ClosestItem)
+	{
+		PC->ItemTooltip->ItemName->SetText(FText::FromString(ClosestItem->ItemDataTable->GetItemData(ClosestItem->ItemIndex).ItemName));
+		PC->ItemTooltip->SetVisibility(ESlateVisibility::Visible);
+	}
+	else
+	{
+		PC->ItemTooltip->SetVisibility(ESlateVisibility::Collapsed);
 	}
 }

@@ -5,6 +5,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Item/ItemDataTableComponent.h"
 #include "Engine/StreamableManager.h"
+#include "Player/MyCharacter.h"
 
 AMasterItem::AMasterItem()
 {
@@ -35,11 +36,29 @@ void AMasterItem::BeginPlay()
 
 void AMasterItem::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
 {
-	UE_LOG(LogClass, Warning, TEXT("OnBeginOverlap : %s"), *this->GetName());
+	//UE_LOG(LogClass, Warning, TEXT("OnBeginOverlap : %s"), *this->GetName());
+
+	if (OtherActor->ActorHasTag(FName(TEXT("Player"))))
+	{
+		AMyCharacter* Pawn = Cast<AMyCharacter>(OtherActor);
+		if (Pawn)
+		{
+			Pawn->AddPickupItemList(this);
+		}
+	}
+
 }
 
 void AMasterItem::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 
-	UE_LOG(LogClass, Warning, TEXT("OnEndOverlap : %s"), *this->GetName());
+	//UE_LOG(LogClass, Warning, TEXT("OnEndOverlap : %s"), *this->GetName());
+	if (OtherActor->ActorHasTag(FName(TEXT("Player"))))
+	{
+		AMyCharacter* Pawn = Cast<AMyCharacter>(OtherActor);
+		if (Pawn)
+		{
+			Pawn->RemovePickupItemList(this);
+		}
+	}
 }
