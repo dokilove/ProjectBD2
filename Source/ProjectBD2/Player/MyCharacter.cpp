@@ -86,6 +86,11 @@ AMyCharacter::AMyCharacter()
 	{
 		HitEffect = P_HitEffect.Object;
 	}
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> P_BloodEffect(TEXT("ParticleSystem'/Game/TPSData/Effects/P_body_bullet_impact.P_body_bullet_impact'"));
+	if (P_BloodEffect.Succeeded())
+	{
+		BloodEffect = P_BloodEffect.Object;
+	}
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> Anim_Dead(TEXT("AnimMontage'/Game/TPSData/Male_Grunt/Animations/AnimMontage/Death_1_Montage.Death_1_Montage'"));
 	if (Anim_Dead.Succeeded())
 	{
@@ -421,8 +426,17 @@ void AMyCharacter::OnShot()
 			UGameplayStatics::ApplyPointDamage(OutHit.GetActor(), 30.0f, OutHit.ImpactPoint - TraceStart, OutHit,
 				UGameplayStatics::GetPlayerController(GetWorld(), 0), this, UBulletDamageType::StaticClass());
 
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitEffect, OutHit.Location,
-				OutHit.ImpactNormal.Rotation());
+			APawn* Pawn = Cast<APawn>(OutHit.GetActor());
+			if (Pawn)
+			{
+				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), BloodEffect, OutHit.Location,
+					OutHit.ImpactNormal.Rotation());
+			}
+			else
+			{
+				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitEffect, OutHit.Location,
+					OutHit.ImpactNormal.Rotation());
+			}
 		}
 	}
 

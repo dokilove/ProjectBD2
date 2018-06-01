@@ -105,6 +105,8 @@ public:
 		class UParticleSystem* RifleMuzzle;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effect")
 		class UParticleSystem* HitEffect;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effect")
+		class UParticleSystem* BloodEffect;
 
 	FTimerHandle FireTimeHandle;
 
