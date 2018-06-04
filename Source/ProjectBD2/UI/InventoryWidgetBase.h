@@ -14,7 +14,9 @@ class PROJECTBD2_API UInventoryWidgetBase : public UUserWidget
 {
 	GENERATED_BODY()
 	
-	
-	
-	
+public:
+	virtual void NativeConstruct() override;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		class UScrollBox* InventoryScrollBox;
 };
