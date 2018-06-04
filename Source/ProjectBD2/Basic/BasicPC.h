@@ -22,4 +22,10 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		class UItemTooltipWidgetBase* ItemTooltip;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		class UInventoryWidgetBase* Inventory;
+
+	UFUNCTION(BlueprintCallable)
+		void ToggleInventory();
 };
