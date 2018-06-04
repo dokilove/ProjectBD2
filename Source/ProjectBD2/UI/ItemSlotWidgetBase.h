@@ -35,7 +35,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		FItemDataTable Data;
 
-	bool IsEmpty = true;
+	bool bIsEmpty = true;
 
 	UFUNCTION(BlueprintCallable)
 		void SetItem(int NewItemIndex);
@@ -48,5 +48,5 @@ public:
 	UFUNCTION(BlueprintCallable)
 		bool IsConsume();
 	UFUNCTION(BlueprintCallable)
-		bool GetItemTableRow(FItemDataTable& ItemTable);
+		bool GetItemTableRow(FItemDataTable& ItemData);
 };
