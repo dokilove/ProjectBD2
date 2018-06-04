@@ -32,5 +32,7 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 		int ItemIndex;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
+		int ItemCount;
 	
 };

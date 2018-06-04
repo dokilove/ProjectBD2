@@ -25,6 +25,7 @@ void AMasterItem::BeginPlay()
 	{
 		ItemIndex = FMath::RandRange(1, 6) * 10;
 		FItemDataTable Data = ItemDataTable->GetItemData(ItemIndex);
+		ItemCount = Data.ItemCount;
 
 		FStreamableManager AssetLoader;
 		GetStaticMeshComponent()->SetStaticMesh(AssetLoader.LoadSynchronous<UStaticMesh>(Data.ItemMesh));

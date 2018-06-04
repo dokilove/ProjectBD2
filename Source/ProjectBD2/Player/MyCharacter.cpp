@@ -24,6 +24,8 @@
 #include "UI/ItemTooltipWidgetBase.h"
 #include "Components/TextBlock.h"
 #include "Item/ItemDataTableComponent.h"
+#include "UI/InventoryWidgetBase.h"
+#include "UI/ItemSlotWidgetBase.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -150,6 +152,10 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		&AMyCharacter::TryIronsight);
 	PlayerInputComponent->BindAction(TEXT("Prone"), EInputEvent::IE_Pressed, this,
 		&AMyCharacter::TryProne);
+	PlayerInputComponent->BindAction(TEXT("GetItem"), EInputEvent::IE_Pressed, this,
+		&AMyCharacter::GetItem);
+	PlayerInputComponent->BindAction(TEXT("Inventory"), EInputEvent::IE_Pressed, this,
+		&AMyCharacter::Inventory);
 
 	PlayerInputComponent->BindAction(TEXT("Sprint"), EInputEvent::IE_Pressed, this,
 		&AMyCharacter::Sprint);
@@ -491,7 +497,7 @@ void AMyCharacter::ViewItemTooltip()
 		return;
 	}
 
-	AMasterItem* ClosestItem = CanPickupList[0];
+	AMasterItem* ClosestItem = GetClosestItem();
 	if (ClosestItem)
 	{
 		PC->ItemTooltip->ItemName->SetText(FText::FromString(ClosestItem->ItemDataTable->GetItemData(ClosestItem->ItemIndex).ItemName));
@@ -500,5 +506,65 @@ void AMyCharacter::ViewItemTooltip()
 	else
 	{
 		PC->ItemTooltip->SetVisibility(ESlateVisibility::Collapsed);
+	}
+}
+
+AMasterItem* AMyCharacter::GetClosestItem()
+{
+	AMasterItem* ClosestItem = nullptr;
+
+	float Min = 9999999999.9f;
+	for (auto Item : CanPickupList)
+	{
+		float Distance = FVector::Dist(Item->GetActorLocation(), GetActorLocation());
+		if (Min > Distance)
+		{
+			Min = Distance;
+			ClosestItem = Item;
+		}
+	}
+
+	return ClosestItem;
+}
+
+void AMyCharacter::GetItem()
+{
+	AMasterItem* PickupItem = GetClosestItem();
+	if (PickupItem && !PickupItem->IsPendingKill())
+	{
+		ABasicPC* PC = Cast<ABasicPC>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+		if (PC)
+		{
+			UItemSlotWidgetBase* Slot = PC->Inventory->GetSameIDSlot(PickupItem->ItemIndex);
+			if (Slot)
+			{
+				Slot->AddItemCount(PickupItem->ItemCount);
+				PickupItem->Destroy();
+				ViewItemTooltip();
+			}
+			else
+			{
+				UItemSlotWidgetBase* NewSlot = PC->Inventory->GetEmptySlot();
+				if (NewSlot)
+				{
+					NewSlot->SetItem(PickupItem->ItemIndex);
+					PickupItem->Destroy();
+					ViewItemTooltip();
+				}
+				else
+				{
+					UE_LOG(LogClass, Warning, TEXT("Inventory full"));
+				}
+			}
+		}
+	}
+}
+
+void AMyCharacter::Inventory()
+{
+	ABasicPC* PC = Cast<ABasicPC>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	if (PC)
+	{
+		PC->ToggleInventory();
 	}
 }

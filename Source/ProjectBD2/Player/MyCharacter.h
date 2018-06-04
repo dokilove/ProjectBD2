@@ -125,4 +125,9 @@ public:
 	void AddPickupItemList(class AMasterItem* Item);
 	void RemovePickupItemList(class AMasterItem* Item);
 	void ViewItemTooltip();
+	AMasterItem * GetClosestItem();
+	UFUNCTION()
+	void GetItem();
+	UFUNCTION()
+	void Inventory();
 };
