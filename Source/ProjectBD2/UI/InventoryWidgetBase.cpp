@@ -1,8 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "InventoryWidgetBase.h"
 #include "Components/ScrollBox.h"
 #include "UI/ItemSlotWidgetBase.h"
+#include "Basic/BasicPC.h"
+#include "Kismet/GameplayStatics.h"
 
 void UInventoryWidgetBase::NativeConstruct()
 {
@@ -10,11 +12,26 @@ void UInventoryWidgetBase::NativeConstruct()
 
 	if (InventoryScrollBox)
 	{
-		for (int i = 0; i < InventoryScrollBox->GetChildrenCount(); ++i)
+		//for (int i = 0; i < InventoryScrollBox->GetChildrenCount(); ++i)
+		//{
+		//	UItemSlotWidgetBase* Slot = Cast<UItemSlotWidgetBase>(InventoryScrollBox->GetChildAt(i));
+		//	if (Slot)
+		//	{
+		//		Slots.Add(Slot);
+		//	}
+		//}
+
+		// 슬롯 아이템 동적 생성
+		ABasicPC* PC = Cast<ABasicPC>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+
+		FStringClassReference SlotRef(TEXT("WidgetBlueprint'/Game/Blueprints/UI/ItemSlotWidget.ItemSlotWidget_C'"));
+		
+		if (UClass* SlotClass = SlotRef.TryLoadClass<UUserWidget>())
 		{
-			UItemSlotWidgetBase* Slot = Cast<UItemSlotWidgetBase>(InventoryScrollBox->GetChildAt(i));
-			if (Slot)
+			for (int i = 0; i < 12; ++i)
 			{
+				UItemSlotWidgetBase* Slot = CreateWidget<UItemSlotWidgetBase>(PC, SlotClass);
+				InventoryScrollBox->AddChild(Slot);
 				Slots.Add(Slot);
 			}
 		}
