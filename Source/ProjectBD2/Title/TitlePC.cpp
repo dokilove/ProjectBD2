@@ -12,7 +12,8 @@ void ATitlePC::BeginPlay()
 		TitleWidget = CreateWidget<UTitleWidgetBase>(this, TitleWidgetClass);
 		TitleWidget->AddToViewport();
 	}
-
+	bShowMouseCursor = true;
+	//SetInputMode(FInputModeUIOnly());
 }
 
 

@@ -3,7 +3,7 @@
 #include "TitleWidgetBase.h"
 #include "Components/Button.h"
 #include "Components/EditableTextBox.h"
-
+#include "Kismet/GameplayStatics.h"
 
 void UTitleWidgetBase::NativeConstruct()
 {
@@ -23,11 +23,16 @@ void UTitleWidgetBase::NativeConstruct()
 
 void UTitleWidgetBase::StartServer()
 {
-
+	UGameplayStatics::OpenLevel(this, TEXT("Lobby"), true, TEXT("listen"));
 }
 
 void UTitleWidgetBase::ConnectServer()
 {
-
+	if (ServerIP)
+	{
+		if (!ServerIP->GetText().IsEmpty())
+		{
+			UGameplayStatics::OpenLevel(this, *ServerIP->GetText().ToString());
+		}
+	}
 }
-
