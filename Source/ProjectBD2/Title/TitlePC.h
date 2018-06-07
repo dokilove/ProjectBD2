@@ -19,7 +19,11 @@ public:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-		class UTitleWidgetBase* TitleWidget;
-	
-	
+		class UTitleWidgetBase* TitleWidget;	
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		class UUserWidget* LoadingWidget;
+
+	void ShowLoading();
+
 };

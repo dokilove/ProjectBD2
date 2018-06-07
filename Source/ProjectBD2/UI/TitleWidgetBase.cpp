@@ -5,6 +5,7 @@
 #include "Components/EditableTextBox.h"
 #include "Kismet/GameplayStatics.h"
 #include "BDGameInstance.h"
+#include "Title/TitlePC.h"
 
 void UTitleWidgetBase::NativeConstruct()
 {
@@ -32,6 +33,7 @@ void UTitleWidgetBase::NativeConstruct()
 
 void UTitleWidgetBase::StartServer()
 {
+	SetUserID();
 	UGameplayStatics::OpenLevel(this, TEXT("Lobby"), true, TEXT("listen"));
 }
 
@@ -41,6 +43,7 @@ void UTitleWidgetBase::ConnectServer()
 	{
 		if (!ServerIP->GetText().IsEmpty())
 		{
+			SetUserID();
 			UGameplayStatics::OpenLevel(this, *ServerIP->GetText().ToString());
 		}
 	}
@@ -55,5 +58,10 @@ void UTitleWidgetBase::SetUserID()
 		{
 			GI->UserID = UserID->GetText().ToString();
 		}
+	}
+	ATitlePC* PC = Cast<ATitlePC>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	if (PC)
+	{
+		PC->ShowLoading();
 	}
 }
