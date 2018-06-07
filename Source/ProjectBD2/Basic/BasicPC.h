@@ -20,6 +20,8 @@ public:
 
 	virtual void BeginPlay() override;
 
+	void SetupWidget();
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		class UItemTooltipWidgetBase* ItemTooltip;
 
