@@ -13,7 +13,7 @@ void ATitlePC::BeginPlay()
 		TitleWidget->AddToViewport();
 	}
 	bShowMouseCursor = true;
-	//SetInputMode(FInputModeUIOnly());
+	SetInputMode(FInputModeUIOnly());
 }
 
 

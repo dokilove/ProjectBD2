@@ -15,7 +15,7 @@ class PROJECTBD2_API UMyCharacterAnimInstance : public UAnimInstance
 	GENERATED_BODY()
 
 public:
-	virtual void NativeUpdateAnimation_WorkerThread(float DeltaSeconds) override;
+	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, category="Info")
 		float Speed;

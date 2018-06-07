@@ -4,7 +4,7 @@
 #include "Player/MyCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
-void UMyCharacterAnimInstance::NativeUpdateAnimation_WorkerThread(float DeltaSeconds)
+void UMyCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
 

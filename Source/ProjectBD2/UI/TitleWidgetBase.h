@@ -30,4 +30,6 @@ public:
 	UFUNCTION()
 	void ConnectServer();
 
+	void SetUserID();
+
 };
