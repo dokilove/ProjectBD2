@@ -14,7 +14,12 @@ class PROJECTBD2_API ATitlePC : public APlayerController
 {
 	GENERATED_BODY()
 	
-	
+public:
+
+	virtual void BeginPlay() override;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		class UTitleWidgetBase* TitleWidget;
 	
 	
 };

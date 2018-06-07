@@ -14,7 +14,7 @@ class PROJECTBD2_API ATitleGM : public AGameModeBase
 {
 	GENERATED_BODY()
 	
-	
-	
+public:
+	ATitleGM();
 	
 };
