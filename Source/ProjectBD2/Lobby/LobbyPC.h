@@ -18,4 +18,11 @@ class PROJECTBD2_API ALobbyPC : public APlayerController
 public:
 	virtual void BeginPlay() override;
 	
+	UFUNCTION(Client, Reliable)
+	void S2C_SetupWidget();
+	void S2C_SetupWidget_Implementation();
+	void StartGame();
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	class ULobbyWidgetBase* LobbyWidget;
 };
