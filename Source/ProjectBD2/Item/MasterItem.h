@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -19,6 +19,7 @@ public:
 	AMasterItem();
 
 	virtual void BeginPlay() override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	UFUNCTION()
 	void OnBeginOverlap(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
 	UFUNCTION()
@@ -30,7 +31,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		class UItemDataTableComponent* ItemDataTable;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data", Replicated)
 		int ItemIndex;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 		int ItemCount;
