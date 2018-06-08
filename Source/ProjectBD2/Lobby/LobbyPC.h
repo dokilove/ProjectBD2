@@ -32,4 +32,8 @@ public:
 	UFUNCTION(Client, Reliable)
 	void S2C_ViewLoading();
 	void S2C_ViewLoading_Implementation();
+
+	FTimerHandle StartGameTimer;
+	UFUNCTION()
+	void GameStartTimer();
 };
