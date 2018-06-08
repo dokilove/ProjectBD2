@@ -1,9 +1,12 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "LobbyPC.h"
 #include "UI/LobbyWidgetBase.h"
 #include "TimerManager.h"
 #include "Components/EditableTextBox.h"
+#include "Components/TextBlock.h"
+#include "Lobby/LobbyGS.h"
+#include "Kismet/GameplayStatics.h"
 
 void ALobbyPC::BeginPlay()
 {
@@ -21,6 +24,15 @@ void ALobbyPC::S2C_SetupWidget_Implementation()
 		if (!HasAuthority())
 		{
 			LobbyWidget->HideButton();
+		}
+		else
+		{
+			ALobbyGS* GS = Cast<ALobbyGS>(UGameplayStatics::GetGameState(GetWorld()));
+			if (GS)
+			{
+				GS->UserCount = UGameplayStatics::GetGameMode(GetWorld())->GetNumPlayers();
+				GS->OnRep_UserCount();
+			}
 		}
 		LobbyWidget->ChattingInput->SetUserFocus(this);
 	}
@@ -86,5 +98,22 @@ void ALobbyPC::S2C_AddChatMessage_Implementation(const FText & Message)
 	if (LobbyWidget)
 	{
 		LobbyWidget->AddChatMessage(Message);
+	}
+}
+
+void ALobbyPC::SetPublicMessage(int LeftTime)
+{
+	if (LobbyWidget && LobbyWidget->PublicMessage)
+	{
+		LobbyWidget->PublicMessage->SetText(FText::FromString(FString::Printf(TEXT("%d초 남음ㅋ"), LeftTime)));
+	}
+}
+
+void ALobbyPC::SetAlive(int UserCount)
+{
+	if (LobbyWidget && LobbyWidget->Alive)
+	{
+		FString Temp = FString::Printf(TEXT("%d 합류"), UserCount);
+		LobbyWidget->Alive->SetText(FText::FromString(Temp));
 	}
 }

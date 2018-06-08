@@ -45,4 +45,7 @@ public:
 	UFUNCTION(Client, Reliable)
 		void S2C_AddChatMessage(const FText& Message);
 		void S2C_AddChatMessage_Implementation(const FText& Message);
+
+		void SetPublicMessage(int LeftTime);
+		void SetAlive(int UserCount);
 };

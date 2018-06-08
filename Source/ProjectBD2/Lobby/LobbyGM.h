@@ -14,7 +14,10 @@ class PROJECTBD2_API ALobbyGM : public AGameModeBase
 {
 	GENERATED_BODY()
 	
+public:
+	virtual void BeginPlay() override;
+	virtual void PostLogin(APlayerController* NewPlayer);
 	
-	
-	
+	FTimerHandle StartGameTimeHandle;
+	void StartGameTimer();
 };
