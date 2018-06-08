@@ -32,4 +32,5 @@ public:
 	UFUNCTION()
 	void OnTextCommitted(const FText & Text, ETextCommit::Type CommitMethod);
 	void HideButton();
+	void AddChatMessage(const FText & Message);
 };

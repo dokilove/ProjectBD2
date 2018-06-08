@@ -57,7 +57,16 @@ void ULobbyWidgetBase::OnTextCommitted(const FText& Text, ETextCommit::Type Comm
 					Message =FString::Printf(TEXT("%s : %s"), *GI->UserID, *Text.ToString());
 					//UE_LOG(LogClass, Warning, TEXT("%s"), *Message);
 					PC->C2S_SendChatMessage(FText::FromString(*Message));
+
+					ChattingInput->SetText(FText::FromString(TEXT("")));
 				}
+			}
+		}
+		else if (CommitMethod == ETextCommit::OnCleared)
+		{
+			if (PC)
+			{
+				ChattingInput->SetUserFocus(PC);
 			}
 		}
 	}
@@ -72,6 +81,13 @@ void ULobbyWidgetBase::AddChatMessage(const FText& Message)
 {
 	if (ChattingBox)
 	{
+		UTextBlock* NewMesage = NewObject<UTextBlock>(ChattingBox);
+		if (NewMesage)
+		{
+			NewMesage->SetText(Message);
+			ChattingBox->AddChild(NewMesage);
+			ChattingBox->ScrollToEnd();
+		}
 	}
 }
 

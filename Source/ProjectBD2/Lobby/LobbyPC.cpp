@@ -3,6 +3,7 @@
 #include "LobbyPC.h"
 #include "UI/LobbyWidgetBase.h"
 #include "TimerManager.h"
+#include "Components/EditableTextBox.h"
 
 void ALobbyPC::BeginPlay()
 {
@@ -21,6 +22,7 @@ void ALobbyPC::S2C_SetupWidget_Implementation()
 		{
 			LobbyWidget->HideButton();
 		}
+		LobbyWidget->ChattingInput->SetUserFocus(this);
 	}
 
 	FStringClassReference LoadingWidgetRef(TEXT("WidgetBlueprint'/Game/Blueprints/Loading/LoadingWidget.LoadingWidget_C'"));
@@ -80,5 +82,9 @@ void ALobbyPC::C2S_SendChatMessage_Implementation(const FText& Message)
 
 void ALobbyPC::S2C_AddChatMessage_Implementation(const FText & Message)
 {
-	UE_LOG(LogClass, Warning, TEXT("%s"), *Message.ToString());
+	//UE_LOG(LogClass, Warning, TEXT("%s"), *Message.ToString());
+	if (LobbyWidget)
+	{
+		LobbyWidget->AddChatMessage(Message);
+	}
 }
