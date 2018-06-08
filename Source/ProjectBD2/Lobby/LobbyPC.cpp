@@ -60,3 +60,25 @@ void ALobbyPC::GameStartTimer()
 {
 	GetWorld()->ServerTravel(TEXT("Battle"));
 }
+
+bool ALobbyPC::C2S_SendChatMessage_Validate(const FText& Message)
+{
+	return true;
+}
+
+void ALobbyPC::C2S_SendChatMessage_Implementation(const FText& Message)
+{
+	for (auto i = GetWorld()->GetControllerIterator(); i; ++i)
+	{
+		ALobbyPC* PC = Cast<ALobbyPC>(*i);
+		if (PC)
+		{
+			PC->S2C_AddChatMessage(Message);
+		}
+	}
+}
+
+void ALobbyPC::S2C_AddChatMessage_Implementation(const FText & Message)
+{
+	UE_LOG(LogClass, Warning, TEXT("%s"), *Message.ToString());
+}

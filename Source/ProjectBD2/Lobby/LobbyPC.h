@@ -36,4 +36,13 @@ public:
 	FTimerHandle StartGameTimer;
 	UFUNCTION()
 	void GameStartTimer();
+
+	UFUNCTION(Server, Reliable, WithValidation)
+		void C2S_SendChatMessage(const FText& Message);
+	bool C2S_SendChatMessage_Validate(const FText& Message);
+	void C2S_SendChatMessage_Implementation(const FText& Message);
+
+	UFUNCTION(Client, Reliable)
+		void S2C_AddChatMessage(const FText& Message);
+		void S2C_AddChatMessage_Implementation(const FText& Message);
 };

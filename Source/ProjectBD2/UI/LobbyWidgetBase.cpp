@@ -7,6 +7,7 @@
 #include "Components/ScrollBox.h"
 #include "Lobby/LobbyPC.h"
 #include "Kismet/GameplayStatics.h"
+#include "BDGameInstance.h"
 
 void ULobbyWidgetBase::NativeConstruct()
 {
@@ -38,7 +39,28 @@ void ULobbyWidgetBase::StartGame()
 
 void ULobbyWidgetBase::OnTextCommitted(const FText& Text, ETextCommit::Type CommitMethod)
 {
+	ALobbyPC* PC = Cast<ALobbyPC>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	if (PC)
+	{
+		if (CommitMethod == ETextCommit::OnEnter)
+		{
+			if (Text.IsEmpty())
+			{
 
+			}
+			else
+			{
+				UBDGameInstance* GI = Cast<UBDGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+				if (GI)
+				{
+					FString Message;
+					Message =FString::Printf(TEXT("%s : %s"), *GI->UserID, *Text.ToString());
+					//UE_LOG(LogClass, Warning, TEXT("%s"), *Message);
+					PC->C2S_SendChatMessage(FText::FromString(*Message));
+				}
+			}
+		}
+	}
 }
 
 void ULobbyWidgetBase::HideButton()
@@ -46,4 +68,10 @@ void ULobbyWidgetBase::HideButton()
 	StartGameButton->SetVisibility(ESlateVisibility::Collapsed);
 }
 
+void ULobbyWidgetBase::AddChatMessage(const FText& Message)
+{
+	if (ChattingBox)
+	{
+	}
+}
 
