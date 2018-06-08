@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -25,4 +25,11 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	class ULobbyWidgetBase* LobbyWidget;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		class UUserWidget* LoadingWidget;
+
+	UFUNCTION(Client, Reliable)
+	void S2C_ViewLoading();
+	void S2C_ViewLoading_Implementation();
 };
