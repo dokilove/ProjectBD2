@@ -205,6 +205,13 @@ float ABattleCharacter::TakeDamage(float DamageAmount, FDamageEvent const & Dama
 		S2A_DeadProgress();
 	}
 
+	ABattlePC* PC = Cast<ABattlePC>(GetController());
+	if (PC)
+	{
+		PC->S2C_BloodEffect();
+	}
+	
+
 	return 0.0f;
 }
 

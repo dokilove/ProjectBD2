@@ -61,3 +61,13 @@ void ABattlePC::C2S_DestroyItem_Implementation(class AMasterItem* Item)
 {
 	Item->Destroy();
 }
+
+void ABattlePC::S2C_BloodEffect_Implementation()
+{
+	FStringClassReference BloodEffectWidgetRef(TEXT("WidgetBlueprint'/Game/Blueprints/UI/BloodEffectWidget.BloodEffectWidget_C'"));
+	if (UClass* BloodEffectWidgetClass = BloodEffectWidgetRef.TryLoadClass<UUserWidget>())
+	{
+		UUserWidget* BloodEffectWidget = CreateWidget<UUserWidget>(this, BloodEffectWidgetClass);
+		BloodEffectWidget->AddToViewport();
+	}
+}

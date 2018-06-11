@@ -36,4 +36,7 @@ public:
 	bool C2S_DestroyItem_Validate(class AMasterItem* Item);
 	void C2S_DestroyItem_Implementation(class AMasterItem* Item);
 
+	UFUNCTION(Client, Reliable)
+		void S2C_BloodEffect();
+	void S2C_BloodEffect_Implementation();
 };
