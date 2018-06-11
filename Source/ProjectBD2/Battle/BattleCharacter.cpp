@@ -453,26 +453,45 @@ void ABattleCharacter::OnShot()
 	FVector TraceStart = CameraLocation;
 	FVector TraceEnd = CameraLocation + (WorldDirection * 80000.0f);
 
+	C2S_OnShot(TraceStart, TraceEnd);
+
+	UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0)->PlayCameraShake(URifleCameraShake::StaticClass());
+	FRotator CurrentRotation = GetControlRotation();
+	CurrentRotation.Pitch += 1.0f;
+	CurrentRotation.Yaw += FMath::FRandRange(-0.05f, 0.05f);
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetControlRotation(CurrentRotation);
+
+	if (bIsFire)
+	{
+		GetWorldTimerManager().SetTimer(FireTimeHandle, this, &ABattleCharacter::OnShot, 0.1f);
+	}
+}
+
+bool ABattleCharacter::C2S_OnShot_Validate(FVector TraceStart, FVector TraceEnd)
+{
+	return true;
+}
+
+void ABattleCharacter::C2S_OnShot_Implementation(FVector TraceStart, FVector TraceEnd)
+{
+
 	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
 	TArray<AActor*> IgnoreObject;
 	FHitResult OutHit;
 
 
 	FTransform MuzzleTransform = Weapon->GetSocketTransform(TEXT("MuzzleFlash"));
+	S2A_MuzzleEffectAndSound();
 
 	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldStatic));
 	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldDynamic));
 	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_PhysicsBody));
 	IgnoreObject.Add(this);
 
+
 	bool Result = UKismetSystemLibrary::LineTraceSingleForObjects(GetWorld(), TraceStart, TraceEnd,
 		ObjectTypes, false, IgnoreObject, EDrawDebugTrace::None,
 		OutHit, true, FLinearColor::Blue, FLinearColor::Blue, 5.0f);
-
-	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), RifleMuzzle, MuzzleTransform);
-
-	UGameplayStatics::SpawnSoundAtLocation(GetWorld(), RifleSound, MuzzleTransform.GetLocation(),
-		MuzzleTransform.GetRotation().Rotator());
 
 	if (Result)
 	{
@@ -484,36 +503,39 @@ void ABattleCharacter::OnShot()
 			OutHit, true, FLinearColor::Green, FLinearColor::Red, 5.0f);
 		if (Result)
 		{
-			UGameplayStatics::ApplyDamage(OutHit.GetActor(), 0.0f, UGameplayStatics::GetPlayerController(GetWorld(), 0), this, UBulletDamageType::StaticClass());
+			//UGameplayStatics::ApplyDamage(OutHit.GetActor(), 0.0f, UGameplayStatics::GetPlayerController(GetWorld(), 0), this, UBulletDamageType::StaticClass());
 
-			UGameplayStatics::ApplyRadialDamage(GetWorld(), 0.0f, OutHit.ImpactPoint, 300.0f, UBulletDamageType::StaticClass(), IgnoreObject, this, UGameplayStatics::GetPlayerController(GetWorld(), 0), false);
+			//UGameplayStatics::ApplyRadialDamage(GetWorld(), 0.0f, OutHit.ImpactPoint, 300.0f, UBulletDamageType::StaticClass(), IgnoreObject, this, UGameplayStatics::GetPlayerController(GetWorld(), 0), false);
 
 			UGameplayStatics::ApplyPointDamage(OutHit.GetActor(), 30.0f, OutHit.ImpactPoint - TraceStart, OutHit,
 				UGameplayStatics::GetPlayerController(GetWorld(), 0), this, UBulletDamageType::StaticClass());
 
-			APawn* Pawn = Cast<APawn>(OutHit.GetActor());
-			if (Pawn)
-			{
-				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), BloodEffect, OutHit.Location,
-					OutHit.ImpactNormal.Rotation());
-			}
-			else
-			{
-				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitEffect, OutHit.Location,
-					OutHit.ImpactNormal.Rotation());
-			}
+			S2A_HitEffect(OutHit);
 		}
 	}
+}
 
-	UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0)->PlayCameraShake(URifleCameraShake::StaticClass());
-	FRotator CurrentRotation = GetControlRotation();
-	CurrentRotation.Pitch += 1.0f;
-	CurrentRotation.Yaw += FMath::FRandRange(-0.05f, 0.05f);
-	UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetControlRotation(CurrentRotation);
+void ABattleCharacter::S2A_MuzzleEffectAndSound_Implementation()
+{
+	FTransform MuzzleTransform = Weapon->GetSocketTransform(TEXT("MuzzleFlash"));
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), RifleMuzzle, MuzzleTransform);
 
-	if (bIsFire)
+	UGameplayStatics::SpawnSoundAtLocation(GetWorld(), RifleSound, MuzzleTransform.GetLocation(),
+		MuzzleTransform.GetRotation().Rotator());
+}
+
+void ABattleCharacter::S2A_HitEffect_Implementation(const FHitResult & OutHit)
+{
+	APawn* Pawn = Cast<APawn>(OutHit.GetActor());
+	if (Pawn)
 	{
-		GetWorldTimerManager().SetTimer(FireTimeHandle, this, &ABattleCharacter::OnShot, 0.1f);
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), BloodEffect, OutHit.Location,
+			OutHit.ImpactNormal.Rotation());
+	}
+	else
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitEffect, OutHit.Location,
+			OutHit.ImpactNormal.Rotation());
 	}
 }
 

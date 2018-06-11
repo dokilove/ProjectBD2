@@ -104,6 +104,20 @@ public:
 	UFUNCTION()
 		void StopFire();
 	void OnShot();
+
+	UFUNCTION(Server, Reliable, WithValidation)
+		void C2S_OnShot(FVector TraceStart, FVector TraceEnd);
+	bool C2S_OnShot_Validate(FVector TraceStart, FVector TraceEnd);
+	void C2S_OnShot_Implementation(FVector TraceStart, FVector TraceEnd);
+
+	UFUNCTION(NetMulticast, Reliable)
+		void S2A_MuzzleEffectAndSound();
+	void S2A_MuzzleEffectAndSound_Implementation();
+
+	UFUNCTION(NetMulticast, Reliable)
+		void S2A_HitEffect(const FHitResult& OutHit);
+	void S2A_HitEffect_Implementation(const FHitResult& OutHit);
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "Info", Replicated)
 		bool bIsFire = false;
 
