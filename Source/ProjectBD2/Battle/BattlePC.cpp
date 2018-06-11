@@ -5,6 +5,7 @@
 #include "UI/ItemTooltipWidgetBase.h"
 #include "UI/InventoryWidgetBase.h"
 #include "Item/MasterItem.h"
+#include "Battle/BattleCharacterWidgetBase.h"
 
 ABattlePC::ABattlePC()
 {
@@ -32,6 +33,13 @@ void ABattlePC::S2C_SetupWidget_Implementation()
 		Inventory = Cast<UInventoryWidgetBase>(CreateWidget<UUserWidget>(this, InventoryClass));
 		Inventory->AddToViewport();
 		Inventory->SetVisibility(ESlateVisibility::Collapsed);
+	}
+
+	FStringClassReference BattleCharacterWidgetRef(TEXT("WidgetBlueprint'/Game/Blueprints/Battle/BattleCharacterWIdget.BattleCharacterWIdget_C'"));
+	if (UClass* BattleCharacterWidgetClass = BattleCharacterWidgetRef.TryLoadClass<UUserWidget>())
+	{
+		BattleCharacterWidget = CreateWidget<UBattleCharacterWidgetBase>(this, BattleCharacterWidgetClass);
+		BattleCharacterWidget->AddToViewport();
 	}
 }
 

@@ -39,4 +39,6 @@ public:
 	UFUNCTION(Client, Reliable)
 		void S2C_BloodEffect();
 	void S2C_BloodEffect_Implementation();
+
+	class UBattleCharacterWidgetBase* BattleCharacterWidget;
 };
