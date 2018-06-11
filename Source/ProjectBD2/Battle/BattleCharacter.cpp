@@ -26,6 +26,7 @@
 #include "Item/ItemDataTableComponent.h"
 #include "UI/InventoryWidgetBase.h"
 #include "UI/ItemSlotWidgetBase.h"
+#include "UnrealNetwork.h"
 
 // Sets default values
 ABattleCharacter::ABattleCharacter()
@@ -215,6 +216,18 @@ float ABattleCharacter::TakeDamage(float DamageAmount, FDamageEvent const & Dama
 	return 0.0f;
 }
 
+void ABattleCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ABattleCharacter, bIsProne);
+	DOREPLIFETIME(ABattleCharacter, bIsIronsight);
+	DOREPLIFETIME(ABattleCharacter, bIsSprint);
+	DOREPLIFETIME(ABattleCharacter, bIsFire);
+	DOREPLIFETIME(ABattleCharacter, CurrentHP);
+	DOREPLIFETIME(ABattleCharacter, MaxHP);
+}
+
 void ABattleCharacter::MoveForward(float Value)
 {
 	if (Value != 0.0f && !bIsMovingLocked)
@@ -261,6 +274,16 @@ void ABattleCharacter::TryCrouch()
 
 void ABattleCharacter::TryIronsight()
 {
+	C2S_Ironsight();
+}
+
+bool ABattleCharacter::C2S_Ironsight_Validate()
+{
+	return true;
+}
+
+void ABattleCharacter::C2S_Ironsight_Implementation()
+{
 	if (bIsSprint)
 	{
 		return;
@@ -298,6 +321,16 @@ void ABattleCharacter::ReleaseIronsightSpeed()
 
 void ABattleCharacter::TryProne()
 {
+	C2S_Prone();
+}
+
+bool ABattleCharacter::C2S_Prone_Validate()
+{
+	return true;
+}
+
+void ABattleCharacter::C2S_Prone_Implementation()
+{
 	if (!bIsProne)
 	{
 		if (bIsSprint)
@@ -334,6 +367,16 @@ FRotator ABattleCharacter::GetAimoffset() const
 
 void ABattleCharacter::Sprint()
 {
+	C2S_Sprint();
+}
+
+bool ABattleCharacter::C2S_Sprint_Validate()
+{
+	return true;
+}
+
+void ABattleCharacter::C2S_Sprint_Implementation()
+{
 	if (!bIsCrouched && !bIsIronsight)
 	{
 		bIsSprint = true;
@@ -342,6 +385,16 @@ void ABattleCharacter::Sprint()
 }
 
 void ABattleCharacter::UnSprint()
+{
+	C2S_UnSprint();
+}
+
+bool ABattleCharacter::C2S_UnSprint_Validate()
+{
+	return true;
+}
+
+void ABattleCharacter::C2S_UnSprint_Implementation()
 {
 	bIsSprint = false;
 	if (!bIsProne)

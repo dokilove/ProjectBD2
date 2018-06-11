@@ -27,6 +27,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	UFUNCTION()
 		void MoveForward(float Value);
@@ -40,11 +41,21 @@ public:
 		void TryCrouch();
 	UFUNCTION()
 		void TryIronsight();
+	UFUNCTION(Server, Reliable, WithValidation)
+		void C2S_Ironsight();
+	bool C2S_Ironsight_Validate();
+	void C2S_Ironsight_Implementation();
+
 	void SetIronsightSpeed();
 	void ReleaseIronsightSpeed();
 	UFUNCTION()
 		void TryProne();
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Info")
+	UFUNCTION(Server, Reliable, WithValidation)
+		void C2S_Prone();
+	bool C2S_Prone_Validate();
+	void C2S_Prone_Implementation();
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Info", Replicated)
 		bool bIsProne;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
@@ -58,7 +69,7 @@ public:
 
 	FRotator GetAimoffset() const;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Info")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Info", Replicated)
 		bool bIsIronsight = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Info")
@@ -72,9 +83,17 @@ public:
 
 	UFUNCTION()
 		void Sprint();
+	UFUNCTION(Server, Reliable, WithValidation)
+		void C2S_Sprint();
+	bool C2S_Sprint_Validate();
+	void C2S_Sprint_Implementation();
 	UFUNCTION()
 		void UnSprint();
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Info")
+	UFUNCTION(Server, Reliable, WithValidation)
+		void C2S_UnSprint();
+	bool C2S_UnSprint_Validate();
+	void C2S_UnSprint_Implementation();
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Info", Replicated)
 		bool bIsSprint;
 	UFUNCTION()
 		void LookAround();
@@ -85,7 +104,7 @@ public:
 	UFUNCTION()
 		void StopFire();
 	void OnShot();
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "Info")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "Info", Replicated)
 		bool bIsFire = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "Info")
@@ -110,10 +129,10 @@ public:
 
 	FTimerHandle FireTimeHandle;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "Info")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "Info", Replicated)
 		float CurrentHP;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "Info")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "Info", Replicated)
 		float MaxHP = 100.0f;
 
 
