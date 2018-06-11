@@ -1,13 +1,13 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "BattlePC.h"
-#include "Basic/BasicCameraManager.h"
+#include "Battle/BattlePCM.h"
 #include "UI/ItemTooltipWidgetBase.h"
 #include "UI/InventoryWidgetBase.h"
 
 ABattlePC::ABattlePC()
 {
-	PlayerCameraManagerClass = ABasicCameraManager::StaticClass();
+	PlayerCameraManagerClass = ABattlePCM::StaticClass();
 }
 
 void ABattlePC::BeginPlay()
