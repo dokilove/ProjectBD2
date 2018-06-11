@@ -66,7 +66,7 @@ ABattleCharacter::ABattleCharacter()
 	//	GetMesh()->SetAnimInstanceClass(Anim_Class.Class);
 	//}
 
-	FStringClassReference Anim_Male_Ref(TEXT("AnimBlueprint'/Game/Blueprints/Animation/ABP_Male.ABP_Male_C'"));
+	FStringClassReference Anim_Male_Ref(TEXT("AnimBlueprint'/Game/Blueprints/Animation/ABP_Battle_Male.ABP_Battle_Male_C'"));
 	if (UClass* Anim_Male_Class = Anim_Male_Ref.TryLoadClass<UAnimInstance>())
 	{
 		GetMesh()->SetAnimInstanceClass(Anim_Male_Class);
@@ -77,6 +77,7 @@ ABattleCharacter::ABattleCharacter()
 
 
 	GetCharacterMovement()->NavAgentProps.bCanCrouch = true;
+	GetCharacterMovement()->CrouchedHalfHeight = GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
 
 	static ConstructorHelpers::FObjectFinder<USoundBase> S_RifleSound(TEXT("SoundCue'/Game/TPSData/Sound/Weapons/SMG_Thompson/Cue_Thompson_Shot.Cue_Thompson_Shot'"));
 	if (S_RifleSound.Succeeded())
