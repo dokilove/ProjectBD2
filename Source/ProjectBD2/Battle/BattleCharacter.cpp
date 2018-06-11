@@ -54,6 +54,7 @@ ABattleCharacter::ABattleCharacter()
 	GetMesh()->SetRelativeLocation(FVector(0, 0,
 		-GetCapsuleComponent()->GetScaledCapsuleHalfHeight()));
 	GetMesh()->SetRelativeRotation(FRotator(0, -90.0f, 0));
+	GetMesh()->SetCollisionObjectType(ECollisionChannel::ECC_PhysicsBody);
 
 	bUseControllerRotationPitch = false;
 	SpringArm->bUsePawnControlRotation = true;
@@ -180,12 +181,12 @@ float ABattleCharacter::TakeDamage(float DamageAmount, FDamageEvent const & Dama
 	if (DamageEvent.IsOfType(FRadialDamageEvent::ClassID))
 	{
 		FRadialDamageEvent* RadialDamageEvent = (FRadialDamageEvent*)&DamageEvent;
-		UE_LOG(LogClass, Warning, TEXT("FRadialDamageEvent %f"), DamageAmount);
+		//UE_LOG(LogClass, Warning, TEXT("FRadialDamageEvent %f"), DamageAmount);
 	}
 	else if (DamageEvent.IsOfType(FPointDamageEvent::ClassID))
 	{
 		FPointDamageEvent* PointDamageEvent = (FPointDamageEvent*)&DamageEvent;
-		UE_LOG(LogClass, Warning, TEXT("FPointDamageEvent %f %s"), DamageAmount, *PointDamageEvent->HitInfo.BoneName.ToString());
+		//UE_LOG(LogClass, Error, TEXT("FPointDamageEvent %f %s"), DamageAmount, *PointDamageEvent->HitInfo.BoneName.ToString());
 
 		if (PointDamageEvent->HitInfo.BoneName.Compare(FName("head")) == 0)
 		{
@@ -194,26 +195,31 @@ float ABattleCharacter::TakeDamage(float DamageAmount, FDamageEvent const & Dama
 	}
 	else if (DamageEvent.IsOfType(FDamageEvent::ClassID))
 	{
-		UE_LOG(LogClass, Warning, TEXT("Damage %f"), DamageAmount);
+		UE_LOG(LogClass, Error, TEXT("Damage %f"), DamageAmount);
 	}
 
 
 	CurrentHP -= DamageAmount;
 	if (CurrentHP <= 0.0f)
 	{
-		CurrentHP = 0;
-		//GetMesh()->SetSimulatePhysics(true);
-		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
-		DisableInput(Cast<APlayerController>(GetController()));
-
-		if (!GetMesh()->GetAnimInstance()->Montage_IsPlaying(DeadAnim))
-		{
-			PlayAnimMontage(DeadAnim);
-		}
+		S2A_DeadProgress();
 	}
 
 	return 0.0f;
+}
+
+void ABattleCharacter::S2A_DeadProgress_Implementation()
+{
+	CurrentHP = 0;
+	//GetMesh()->SetSimulatePhysics(true);
+	//GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	DisableInput(Cast<APlayerController>(GetController()));
+
+	if (!GetMesh()->GetAnimInstance()->Montage_IsPlaying(DeadAnim))
+	{
+		PlayAnimMontage(DeadAnim);
+	}
 }
 
 void ABattleCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -498,10 +504,10 @@ void ABattleCharacter::C2S_OnShot_Implementation(FVector TraceStart, FVector Tra
 		TraceStart = MuzzleTransform.GetLocation();
 		TraceEnd = TraceStart + (OutHit.Location - TraceStart) * 2.0f;
 
-		bool Result = UKismetSystemLibrary::LineTraceSingleForObjects(GetWorld(), TraceStart, TraceEnd,
-			ObjectTypes, false, IgnoreObject, EDrawDebugTrace::None,
+		bool HitResult = UKismetSystemLibrary::LineTraceSingleForObjects(GetWorld(), TraceStart, TraceEnd,
+			ObjectTypes, false, IgnoreObject, EDrawDebugTrace::ForDuration,
 			OutHit, true, FLinearColor::Green, FLinearColor::Red, 5.0f);
-		if (Result)
+		if (HitResult)
 		{
 			//UGameplayStatics::ApplyDamage(OutHit.GetActor(), 0.0f, UGameplayStatics::GetPlayerController(GetWorld(), 0), this, UBulletDamageType::StaticClass());
 
