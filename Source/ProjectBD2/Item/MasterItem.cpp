@@ -6,7 +6,7 @@
 #include "Item/ItemDataTableComponent.h"
 #include "Engine/StreamableManager.h"
 #include "Engine/StaticMesh.h"
-#include "Player/MyCharacter.h"
+#include "Battle/BattleCharacter.h"
 #include "UnrealNetwork.h"
 
 AMasterItem::AMasterItem()
@@ -57,7 +57,7 @@ void AMasterItem::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 
 	if (OtherActor->ActorHasTag(FName(TEXT("Player"))))
 	{
-		AMyCharacter* Pawn = Cast<AMyCharacter>(OtherActor);
+		ABattleCharacter* Pawn = Cast<ABattleCharacter>(OtherActor);
 		if (Pawn)
 		{
 			Pawn->AddPickupItemList(this);
@@ -72,7 +72,7 @@ void AMasterItem::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 	//UE_LOG(LogClass, Warning, TEXT("OnEndOverlap : %s"), *this->GetName());
 	if (OtherActor->ActorHasTag(FName(TEXT("Player"))))
 	{
-		AMyCharacter* Pawn = Cast<AMyCharacter>(OtherActor);
+		ABattleCharacter* Pawn = Cast<ABattleCharacter>(OtherActor);
 		if (Pawn)
 		{
 			Pawn->RemovePickupItemList(this);

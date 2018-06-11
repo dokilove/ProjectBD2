@@ -31,4 +31,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void ToggleInventory();
 	
+	UFUNCTION(Server, Reliable, WithValidation)
+		void C2S_DestroyItem(class AMasterItem* Item);
+	bool C2S_DestroyItem_Validate(class AMasterItem* Item);
+	void C2S_DestroyItem_Implementation(class AMasterItem* Item);
+
 };

@@ -466,22 +466,28 @@ void ABattleCharacter::OnShot()
 
 void ABattleCharacter::AddPickupItemList(AMasterItem * Item)
 {
-	if (Item && !Item->IsPendingKill())
+	if (IsLocallyControlled())
 	{
-		CanPickupList.Add(Item);
-	}
+		if (Item && !Item->IsPendingKill())
+		{
+			CanPickupList.Add(Item);
+		}
 
-	ViewItemTooltip();
+		ViewItemTooltip();
+	}
 }
 
 void ABattleCharacter::RemovePickupItemList(AMasterItem * Item)
 {
-	if (Item)
+	if (IsLocallyControlled())
 	{
-		CanPickupList.Remove(Item);
-	}
+		if (Item)
+		{
+			CanPickupList.Remove(Item);
+		}
 
-	ViewItemTooltip();
+		ViewItemTooltip();
+	}
 }
 
 void ABattleCharacter::ViewItemTooltip()
@@ -540,7 +546,7 @@ void ABattleCharacter::GetItem()
 			if (Slot)
 			{
 				Slot->AddItemCount(PickupItem->ItemCount);
-				PickupItem->Destroy();
+				PC->C2S_DestroyItem(PickupItem);
 				ViewItemTooltip();
 			}
 			else
@@ -549,7 +555,7 @@ void ABattleCharacter::GetItem()
 				if (NewSlot)
 				{
 					NewSlot->SetItem(PickupItem->ItemIndex);
-					PickupItem->Destroy();
+					PC->C2S_DestroyItem(PickupItem);
 					ViewItemTooltip();
 				}
 				else

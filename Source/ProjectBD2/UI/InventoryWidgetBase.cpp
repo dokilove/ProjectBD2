@@ -3,7 +3,7 @@
 #include "InventoryWidgetBase.h"
 #include "Components/ScrollBox.h"
 #include "UI/ItemSlotWidgetBase.h"
-#include "Basic/BasicPC.h"
+#include "Battle/BattlePC.h"
 #include "Kismet/GameplayStatics.h"
 
 void UInventoryWidgetBase::NativeConstruct()
@@ -22,7 +22,7 @@ void UInventoryWidgetBase::NativeConstruct()
 		//}
 
 		// 슬롯 아이템 동적 생성
-		ABasicPC* PC = Cast<ABasicPC>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+		ABattlePC* PC = Cast<ABattlePC>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 
 		FStringClassReference SlotRef(TEXT("WidgetBlueprint'/Game/Blueprints/UI/ItemSlotWidget.ItemSlotWidget_C'"));
 		

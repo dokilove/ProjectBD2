@@ -4,6 +4,7 @@
 #include "Battle/BattlePCM.h"
 #include "UI/ItemTooltipWidgetBase.h"
 #include "UI/InventoryWidgetBase.h"
+#include "Item/MasterItem.h"
 
 ABattlePC::ABattlePC()
 {
@@ -48,4 +49,15 @@ void ABattlePC::ToggleInventory()
 		SetInputMode(FInputModeGameOnly());
 		Inventory->SetVisibility(ESlateVisibility::Collapsed);
 	}
+}
+
+
+bool ABattlePC::C2S_DestroyItem_Validate(class AMasterItem* Item)
+{
+	return true;
+}
+
+void ABattlePC::C2S_DestroyItem_Implementation(class AMasterItem* Item)
+{
+	Item->Destroy();
 }
