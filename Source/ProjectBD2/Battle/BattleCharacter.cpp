@@ -115,7 +115,7 @@ void ABattleCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	GetCharacterMovement()->MaxWalkSpeed = JogSpeed;
+	S2A_SetMoveSpeed(JogSpeed);
 	GetCharacterMovement()->MaxWalkSpeedCrouched = WalkSpeed;
 
 	CurrentHP = MaxHP;
@@ -315,13 +315,13 @@ void ABattleCharacter::C2S_Ironsight_Implementation()
 void ABattleCharacter::SetIronsightSpeed()
 {
 
-	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+	S2A_SetMoveSpeed(WalkSpeed);
 	GetCharacterMovement()->MaxWalkSpeedCrouched = WalkSpeed / 2;
 }
 
 void ABattleCharacter::ReleaseIronsightSpeed()
 {
-	GetCharacterMovement()->MaxWalkSpeed = JogSpeed;
+	S2A_SetMoveSpeed(JogSpeed);
 	GetCharacterMovement()->MaxWalkSpeedCrouched = WalkSpeed;
 }
 
@@ -345,7 +345,7 @@ void ABattleCharacter::C2S_Prone_Implementation()
 		}
 
 		bIsProne = true;
-		GetCharacterMovement()->MaxWalkSpeed = ProneSpeed;
+		S2A_SetMoveSpeed(ProneSpeed);
 		GetCharacterMovement()->MaxWalkSpeedCrouched = ProneSpeed;
 	}
 	else
@@ -386,7 +386,7 @@ void ABattleCharacter::C2S_Sprint_Implementation()
 	if (!bIsCrouched && !bIsIronsight)
 	{
 		bIsSprint = true;
-		GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
+		S2A_SetMoveSpeed(SprintSpeed);
 	}
 }
 
@@ -405,7 +405,7 @@ void ABattleCharacter::C2S_UnSprint_Implementation()
 	bIsSprint = false;
 	if (!bIsProne)
 	{
-		GetCharacterMovement()->MaxWalkSpeed = JogSpeed;
+		S2A_SetMoveSpeed(JogSpeed);
 	}
 }
 
@@ -655,4 +655,9 @@ void ABattleCharacter::Inventory()
 	{
 		PC->ToggleInventory();
 	}
+}
+
+void ABattleCharacter::S2A_SetMoveSpeed_Implementation(float Speed)
+{
+	GetCharacterMovement()->MaxWalkSpeed = Speed;
 }

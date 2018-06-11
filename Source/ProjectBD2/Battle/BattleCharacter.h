@@ -168,4 +168,7 @@ public:
 	UFUNCTION()
 		void Inventory();
 	
+	UFUNCTION(NetMulticast, Reliable)
+		void S2A_SetMoveSpeed(float Speed);
+	void S2A_SetMoveSpeed_Implementation(float Speed);
 };
