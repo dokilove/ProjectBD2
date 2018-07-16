@@ -129,7 +129,7 @@ void ABattleCharacter::Tick(float DeltaTime)
 	//UE_LOG(LogClass, Warning, TEXT("Crouch %f"), SpringArm->GetComponentLocation().Z);
 	//UE_LOG(LogClass, Warning, TEXT("eyeheight %f"), CrouchedEyeHeight);
 
-	if (GetCharacterMovement()->Velocity.Size() <= 0.0f)
+	if (GetCharacterMovement()->Velocity.Size() <= 0.0f && bIsSprint)
 	{
 		UnSprint();
 	}
