@@ -22,5 +22,24 @@ void ABattleGM::BeginPlay()
 	}
 }
 
+void ABattleGM::Do0()
+{
+	GLog->Log(TEXT("ÅÊÄ¿°¡ µµ¸Á°¨"));
+}
+
+void ABattleGM::Do1(int Number)
+{
+	GLog->Log(FString::Printf(TEXT("ÅÊÄ¿°¡ µµ¸Á°¨ %dÃÊ ÁØ´Ù. ¾î¿© ¿Í¶ó"), Number));
+}
+
+void ABattleGM::Do2(int Number, float Number2)
+{
+	GLog->Log(FString::Printf(TEXT("%d %f"), Number, Number2));
+}
+
+void ABattleGM::Do3(int Number, float Number2, FString String)
+{
+	GLog->Log(FString::Printf(TEXT("%d %f %s"), Number, Number2, *String));
+}
 
 

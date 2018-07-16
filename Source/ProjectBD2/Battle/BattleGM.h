@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -19,4 +19,14 @@ public:
 	
 	TArray <class AActor*> ItemPoints;
 	
+	// 콘솔 함수
+	UFUNCTION(Exec)
+		void Do0();
+	UFUNCTION(Exec)
+		void Do1(int Number);
+	UFUNCTION(Exec)
+		void Do2(int Number, float Number2);
+	UFUNCTION(Exec)
+		void Do3(int Number, float Number2, FString String);
+
 };
